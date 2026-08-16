@@ -1,0 +1,95 @@
+\doxysection{hdnum::\+Result Struct Reference}
+\hypertarget{structhdnum_1_1Result}{}\label{structhdnum_1_1Result}\index{hdnum::Result@{hdnum::Result}}
+
+
+Container for orthogonality and representation error metrics.  
+
+
+
+
+{\ttfamily \+\#include $<$gram\+\_\+schmidt\+\_\+mixed.\+hh$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+FP1024 \doxymbox{\hyperlink{structhdnum_1_1Result_a6f6940d7a69ce881e1058ca03bed0a1b}{ortho\+\_\+err\+\_\+cgs}}
+\item 
+FP1024 \doxymbox{\hyperlink{structhdnum_1_1Result_ac2befeb6197e780a16e9696c609614de}{ortho\+\_\+err\+\_\+mgs}}
+\item 
+FP1024 \doxymbox{\hyperlink{structhdnum_1_1Result_aeeb492859c39288811c7d8f4aa9655b7}{ortho\+\_\+err\+\_\+cgs2}}
+\item 
+FP1024 \doxymbox{\hyperlink{structhdnum_1_1Result_ab65e6020118c95bad03a4e8c9ef41faf}{ortho\+\_\+err\+\_\+mgs2}}
+\item 
+FP1024 \doxymbox{\hyperlink{structhdnum_1_1Result_ac84002b61a6b39976565939a9d07a7f8}{rep\+\_\+err\+\_\+cgs}}
+\item 
+FP1024 \doxymbox{\hyperlink{structhdnum_1_1Result_a1f5edf945c2da0d145fe4adbb6deed4d}{rep\+\_\+err\+\_\+mgs}}
+\item 
+FP1024 \doxymbox{\hyperlink{structhdnum_1_1Result_a3fe611d80928fe218766ca81cb88da63}{rep\+\_\+err\+\_\+cgs2}}
+\item 
+FP1024 \doxymbox{\hyperlink{structhdnum_1_1Result_a08f58e045f8cc8f59e59eaa58fdc0109}{rep\+\_\+err\+\_\+mgs2}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Container for orthogonality and representation error metrics. 
+
+All fields use {\ttfamily FP1024} (very high precision) so that errors computed from lower-\/precision experiments can be compared without loss of resolution.
+
+Fields named {\ttfamily ortho\+\_\+err\+\_\+\texorpdfstring{$\ast$}{*}} store the Frobenius norm of {\ttfamily Q\texorpdfstring{$^\wedge$}{\string^}T Q -\/ I} for the corresponding algorithm variant, while {\ttfamily rep\+\_\+err\+\_\+\texorpdfstring{$\ast$}{*}} stores the relative representation error {\ttfamily \texorpdfstring{$\vert$}{|}\texorpdfstring{$\vert$}{|}A -\/ Q(\+Q\texorpdfstring{$^\wedge$}{\string^}\+T A)\texorpdfstring{$\vert$}{|}\texorpdfstring{$\vert$}{|}\+\_\+F /\+ \texorpdfstring{$\vert$}{|}\texorpdfstring{$\vert$}{|}\+A\texorpdfstring{$\vert$}{|}\texorpdfstring{$\vert$}{|}\+\_\+F}. 
+
+\label{doc-variable-members}
+\Hypertarget{structhdnum_1_1Result_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structhdnum_1_1Result_a6f6940d7a69ce881e1058ca03bed0a1b}\index{hdnum::Result@{hdnum::Result}!ortho\_err\_cgs@{ortho\_err\_cgs}}
+\index{ortho\_err\_cgs@{ortho\_err\_cgs}!hdnum::Result@{hdnum::Result}}
+\doxysubsubsection{\texorpdfstring{ortho\_err\_cgs}{ortho\_err\_cgs}}
+{\footnotesize\ttfamily \label{structhdnum_1_1Result_a6f6940d7a69ce881e1058ca03bed0a1b} 
+FP1024 hdnum::\+\+Result::\+ortho\+\_\+err\+\_\+cgs}
+
+\Hypertarget{structhdnum_1_1Result_aeeb492859c39288811c7d8f4aa9655b7}\index{hdnum::Result@{hdnum::Result}!ortho\_err\_cgs2@{ortho\_err\_cgs2}}
+\index{ortho\_err\_cgs2@{ortho\_err\_cgs2}!hdnum::Result@{hdnum::Result}}
+\doxysubsubsection{\texorpdfstring{ortho\_err\_cgs2}{ortho\_err\_cgs2}}
+{\footnotesize\ttfamily \label{structhdnum_1_1Result_aeeb492859c39288811c7d8f4aa9655b7} 
+FP1024 hdnum::\+\+Result::\+ortho\+\_\+err\+\_\+cgs2}
+
+\Hypertarget{structhdnum_1_1Result_ac2befeb6197e780a16e9696c609614de}\index{hdnum::Result@{hdnum::Result}!ortho\_err\_mgs@{ortho\_err\_mgs}}
+\index{ortho\_err\_mgs@{ortho\_err\_mgs}!hdnum::Result@{hdnum::Result}}
+\doxysubsubsection{\texorpdfstring{ortho\_err\_mgs}{ortho\_err\_mgs}}
+{\footnotesize\ttfamily \label{structhdnum_1_1Result_ac2befeb6197e780a16e9696c609614de} 
+FP1024 hdnum::\+\+Result::\+ortho\+\_\+err\+\_\+mgs}
+
+\Hypertarget{structhdnum_1_1Result_ab65e6020118c95bad03a4e8c9ef41faf}\index{hdnum::Result@{hdnum::Result}!ortho\_err\_mgs2@{ortho\_err\_mgs2}}
+\index{ortho\_err\_mgs2@{ortho\_err\_mgs2}!hdnum::Result@{hdnum::Result}}
+\doxysubsubsection{\texorpdfstring{ortho\_err\_mgs2}{ortho\_err\_mgs2}}
+{\footnotesize\ttfamily \label{structhdnum_1_1Result_ab65e6020118c95bad03a4e8c9ef41faf} 
+FP1024 hdnum::\+\+Result::\+ortho\+\_\+err\+\_\+mgs2}
+
+\Hypertarget{structhdnum_1_1Result_ac84002b61a6b39976565939a9d07a7f8}\index{hdnum::Result@{hdnum::Result}!rep\_err\_cgs@{rep\_err\_cgs}}
+\index{rep\_err\_cgs@{rep\_err\_cgs}!hdnum::Result@{hdnum::Result}}
+\doxysubsubsection{\texorpdfstring{rep\_err\_cgs}{rep\_err\_cgs}}
+{\footnotesize\ttfamily \label{structhdnum_1_1Result_ac84002b61a6b39976565939a9d07a7f8} 
+FP1024 hdnum::\+\+Result::\+rep\+\_\+err\+\_\+cgs}
+
+\Hypertarget{structhdnum_1_1Result_a3fe611d80928fe218766ca81cb88da63}\index{hdnum::Result@{hdnum::Result}!rep\_err\_cgs2@{rep\_err\_cgs2}}
+\index{rep\_err\_cgs2@{rep\_err\_cgs2}!hdnum::Result@{hdnum::Result}}
+\doxysubsubsection{\texorpdfstring{rep\_err\_cgs2}{rep\_err\_cgs2}}
+{\footnotesize\ttfamily \label{structhdnum_1_1Result_a3fe611d80928fe218766ca81cb88da63} 
+FP1024 hdnum::\+\+Result::\+rep\+\_\+err\+\_\+cgs2}
+
+\Hypertarget{structhdnum_1_1Result_a1f5edf945c2da0d145fe4adbb6deed4d}\index{hdnum::Result@{hdnum::Result}!rep\_err\_mgs@{rep\_err\_mgs}}
+\index{rep\_err\_mgs@{rep\_err\_mgs}!hdnum::Result@{hdnum::Result}}
+\doxysubsubsection{\texorpdfstring{rep\_err\_mgs}{rep\_err\_mgs}}
+{\footnotesize\ttfamily \label{structhdnum_1_1Result_a1f5edf945c2da0d145fe4adbb6deed4d} 
+FP1024 hdnum::\+\+Result::\+rep\+\_\+err\+\_\+mgs}
+
+\Hypertarget{structhdnum_1_1Result_a08f58e045f8cc8f59e59eaa58fdc0109}\index{hdnum::Result@{hdnum::Result}!rep\_err\_mgs2@{rep\_err\_mgs2}}
+\index{rep\_err\_mgs2@{rep\_err\_mgs2}!hdnum::Result@{hdnum::Result}}
+\doxysubsubsection{\texorpdfstring{rep\_err\_mgs2}{rep\_err\_mgs2}}
+{\footnotesize\ttfamily \label{structhdnum_1_1Result_a08f58e045f8cc8f59e59eaa58fdc0109} 
+FP1024 hdnum::\+\+Result::\+rep\+\_\+err\+\_\+mgs2}
+
+
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+/\+home/\+lucia/\+\+Documents/\+\+FP/\+hdnum/\+src/\+\doxymbox{\hyperlink{gram__schmidt__mixed_8hh}{gram\+\_\+schmidt\+\_\+mixed.\+hh}}\end{DoxyCompactItemize}

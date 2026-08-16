@@ -1,0 +1,1626 @@
+\doxysection{/\+home/\+lucia/\+\+Documents/\+\+FP/\+hdnum/\+examples/\+praktikum/\+gram\+\_\+schmidt\+\_\+mixed.cc File Reference}
+\hypertarget{gram__schmidt__mixed_8cc}{}\label{gram__schmidt__mixed_8cc}\index{/home/lucia/Documents/FP/hdnum/examples/praktikum/gram\_schmidt\_mixed.cc@{/home/lucia/Documents/FP/hdnum/examples/praktikum/gram\_schmidt\_mixed.cc}}
+
+
+Mixed-\/precision Gram-\/\+Schmidt example driver focused on plotting error differences between precisions.  
+
+
+{\ttfamily \+\#include "{}../\+../\+hdnum.\+hh"{}}\newline
+{\ttfamily \+\#include "{}../\+../\+src/\+gram\+\_\+schmidt\+\_\+mixed.\+hh"{}}\newline
+{\ttfamily \+\#include "{}../\+../\+src/\+testmatrices.\+hh"{}}\newline
+{\ttfamily \+\#include $<$array$>$}\newline
+{\ttfamily \+\#include $<$algorithm$>$}\newline
+{\ttfamily \+\#include $<$cmath$>$}\newline
+{\ttfamily \+\#include $<$cstdlib$>$}\newline
+{\ttfamily \+\#include $<$fstream$>$}\newline
+{\ttfamily \+\#include $<$iomanip$>$}\newline
+{\ttfamily \+\#include $<$iostream$>$}\newline
+{\ttfamily \+\#include $<$map$>$}\newline
+{\ttfamily \+\#include $<$tuple$>$}\newline
+{\ttfamily \+\#include $<$string$>$}\newline
+{\ttfamily \+\#include $<$vector$>$}\newline
+{\ttfamily \+\#include $<$filesystem$>$}\newline
+{\ttfamily \+\#include $<$ctime$>$}\newline
+{\ttfamily \+\#include $<$set$>$}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \doxymbox{\hyperlink{structPlotSeries}{Plot\+Series}}
+\begin{DoxyCompactList}\small\item\em Describe one plotted series for the generated GNUplot output. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+using \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a0da30825b41d263746800fdac3233b7e}{recursive\+\_\+directory\+\_\+iterator}} = std::\+filesystem::\+recursive\+\_\+directory\+\_\+iterator
+\item 
+using \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a645bda96cf352531595b41360fde608d}{Combo\+Key}} = std::\+tuple$<$std::\+size\+\_\+t, std::\+size\+\_\+t, std::\+size\+\_\+t, std::\+size\+\_\+t$>$
+\item 
+using \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a7f80efc175c52dc19332b62d3bbca5b0}{Combo\+Key2}} = std::\+tuple$<$std::\+size\+\_\+t, std::\+size\+\_\+t$>$
+\item 
+using \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a84e04eb8d0babf744caf6b567dc4471e}{Result\+Map}} = std::\+map$<$\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a645bda96cf352531595b41360fde608d}{Combo\+Key}}, std::\+map$<$double, \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}$>$$>$
+\begin{DoxyCompactList}\small\item\em \doxylink{gram__schmidt__mixed_8cc_a84e04eb8d0babf744caf6b567dc4471e}{Result\+Map} is used to store the results of four precision runs sorted by precision combination and kappa. \end{DoxyCompactList}\item 
+using \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aee752b13f80bc2082942d8127f803579}{Result\+Map2}} = std::\+map$<$\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a7f80efc175c52dc19332b62d3bbca5b0}{Combo\+Key2}}, std::\+map$<$double, \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}$>$$>$
+\begin{DoxyCompactList}\small\item\em \doxylink{gram__schmidt__mixed_8cc_aee752b13f80bc2082942d8127f803579}{Result\+Map2} is used to store the results of two precision runs sorted by precision combination and kappa. \end{DoxyCompactList}\item 
+using \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a34c63a3a70c5c1009f9a8816b3289a33}{Precision\+Tuple}} = std::\+tuple$<$FP8, bfloat16, FP16, FP32, FP64, FP128, FP256, FP512, FP1024$>$
+\begin{DoxyCompactList}\small\item\em Tuple of all precision types that can be used. \end{DoxyCompactList}\item 
+{\footnotesize template$<$std::\+size\+\_\+t Index$>$ }\\using \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a63ac726b6527571e7b2f1ac7b7f58d75}{Precision}} = std::\+tuple\+\_\+element\+\_\+t$<$Index, \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a34c63a3a70c5c1009f9a8816b3289a33}{Precision\+Tuple}}$>$
+\begin{DoxyCompactList}\small\item\em Shorthand to convert indices to precision types i.\+e. \doxylink{gram__schmidt__mixed_8cc_a63ac726b6527571e7b2f1ac7b7f58d75}{Precision$<$4$>$} =\texorpdfstring{$>$}{>} FP64. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+std::\+string \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aaf448113b3ba6c968d33481093aa3111}{prec\+\_\+label}} (const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a645bda96cf352531595b41360fde608d}{Combo\+Key}} \&combo)
+\begin{DoxyCompactList}\small\item\em Create a human-\/readable label for a precision-\/combination tuple. \end{DoxyCompactList}\item 
+std::\+string \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a53ef918716e33f39fd78e652918e9c82}{prec\+\_\+label}} (const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a7f80efc175c52dc19332b62d3bbca5b0}{Combo\+Key2}} \&combo)
+\item 
+std::\+string \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aeb719ced00a61b0b028d4b3b5f90fc08}{prec\+\_\+label1}} (const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a7f80efc175c52dc19332b62d3bbca5b0}{Combo\+Key2}} \&combo)
+\item 
+{\footnotesize template$<$std::\+size\+\_\+t I1, std::\+size\+\_\+t I2, std::\+size\+\_\+t I3, std::\+size\+\_\+t I4$>$ }\\void \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac09dd5aa605a876ac3e2455a3bea2e7b}{run\+\_\+precisions}} ()
+\begin{DoxyCompactList}\small\item\em Run one combination of four precisions and save errors as result. \end{DoxyCompactList}\item 
+{\footnotesize template$<$std::\+size\+\_\+t I1, std::\+size\+\_\+t I2$>$ }\\void \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ad7f31ac9b3bc26fd49d0cd88f50eec17}{run\+\_\+precisions}} ()
+\begin{DoxyCompactList}\small\item\em Run one combination of two precisions and save errors as result. \end{DoxyCompactList}\item 
+std::\+string \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a42690c9cac1d9cdf97ca65862bf08670}{label\+\_\+slug}} (const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a645bda96cf352531595b41360fde608d}{Combo\+Key}} \&combo)
+\begin{DoxyCompactList}\small\item\em Convert a precision-\/combination label into a filename-\/safe slug. \end{DoxyCompactList}\item 
+std::\+string \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a37b800c526eacee971194affe2c4ddfd}{label\+\_\+slug}} (const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a7f80efc175c52dc19332b62d3bbca5b0}{Combo\+Key2}} \&combo)
+\item 
+double \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a09e8147d95a1073932e81fae8b6e32d9}{unit\+\_\+roundoff\+\_\+for\+\_\+precision}} (std::\+size\+\_\+t precision\+\_\+index)
+\begin{DoxyCompactList}\small\item\em Return the unit roundoff corresponding to one precision index. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a55445a4b89b5bbf64e83766238053928}{write\+\_\+precision\+\_\+series}} (std::\+ofstream \&script, const \doxymbox{\hyperlink{structPlotSeries}{Plot\+Series}} \&series, const std::\+filesystem::\+path \&\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\+\_\+dir}}, std::\+size\+\_\+t style\+\_\+index)
+\begin{DoxyCompactList}\small\item\em Emit one plotted precision series as a solid linespoints trace plus dashed unit-\/roundoff overlays. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Writer$>$ }\\void \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_acb6fbb58e37e5c52a40ccad8653f4409}{write\+\_\+multiline\+\_\+plot}} (std::\+ofstream \&script, std::\+size\+\_\+t item\+\_\+count, Writer write\+\_\+item)
+\begin{DoxyCompactList}\small\item\em Write a GNUplot plot command across multiple lines. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Value\+Getter$>$ }\\std::\+vector$<$ \doxymbox{\hyperlink{structPlotSeries}{Plot\+Series}} $>$ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a7ed8162f9ffe5f19f2a59313c43f2f6c}{write\+\_\+metric\+\_\+data}} (const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a84e04eb8d0babf744caf6b567dc4471e}{Result\+Map}} \&all\+\_\+results, Value\+Getter getter, const std::\+string \&metric\+\_\+slug, const std::\+filesystem::\+path \&\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\+\_\+dir}})
+\begin{DoxyCompactList}\small\item\em Write one metric to disk for each precision combination. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Value\+Getter$>$ }\\std::\+vector$<$ \doxymbox{\hyperlink{structPlotSeries}{Plot\+Series}} $>$ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a01e623b3967fa5a9d743ba7ce3a32e60}{write\+\_\+metric\+\_\+data1}} (const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aee752b13f80bc2082942d8127f803579}{Result\+Map2}} \&all\+\_\+results, Value\+Getter getter, const std::\+string \&metric\+\_\+slug, const std::\+filesystem::\+path \&\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\+\_\+dir}})
+\begin{DoxyCompactList}\small\item\em Write one metric to disk for each precision. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Value\+Getter$>$ }\\std::\+vector$<$ \doxymbox{\hyperlink{structPlotSeries}{Plot\+Series}} $>$ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ab2a7d626a0b3d80fd847a21b282771b7}{write\+\_\+metric\+\_\+data2}} (const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aee752b13f80bc2082942d8127f803579}{Result\+Map2}} \&all\+\_\+results, Value\+Getter getter, const std::\+string \&metric\+\_\+slug, const std::\+filesystem::\+path \&\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\+\_\+dir}})
+\begin{DoxyCompactList}\small\item\em Write one metric to disk for each precision combination (uesd for two precision CGS2/\+\+MGS2). \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a717d4c71d52243a7284f3e964b4b51b3}{write\+\_\+plot\+\_\+panel}} (std::\+ofstream \&script, const std::\+string \&title, const std::\+string \&y\+\_\+label, const std::\+vector$<$ \doxymbox{\hyperlink{structPlotSeries}{Plot\+Series}} $>$ \&series, const std::\+filesystem::\+path \&\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\+\_\+dir}}, double origin\+\_\+x, double origin\+\_\+y, double width, double height)
+\begin{DoxyCompactList}\small\item\em Add one GNUplot panel for a metric plot to the plot script. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a150f7beddb9736106b384e66df05e7fb}{write\+\_\+legend\+\_\+panel}} (std::\+ofstream \&script, const std::\+vector$<$ \doxymbox{\hyperlink{structPlotSeries}{Plot\+Series}} $>$ \&series, double origin\+\_\+x, double origin\+\_\+y, double width, double height)
+\begin{DoxyCompactList}\small\item\em Add a legend panel to the generated GNUplot script. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aa7cc7ecd93d1acc602ead6bc5641cd81}{write\+\_\+roundoff\+\_\+legend\+\_\+panel}} (std::\+ofstream \&script, const std::\+vector$<$ std::\+size\+\_\+t $>$ \&\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ad508532175c1371713583af16aee036c}{roundoff\+\_\+indices}}, double origin\+\_\+x, double origin\+\_\+y, double width, double height)
+\begin{DoxyCompactList}\small\item\em Add a legend panel explaining the dashed unit-\/roundoff references. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ab74494055de04f91ccae9691954ca978}{write\+\_\+combined\+\_\+legend\+\_\+panel}} (std::\+ofstream \&script, const std::\+vector$<$ \doxymbox{\hyperlink{structPlotSeries}{Plot\+Series}} $>$ \&algorithm\+\_\+series, const std::\+vector$<$ std::\+size\+\_\+t $>$ \&\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ad508532175c1371713583af16aee036c}{roundoff\+\_\+indices}}, double origin\+\_\+x, double origin\+\_\+y, double width, double height)
+\begin{DoxyCompactList}\small\item\em Add a combined legend panel for precision combination labels and roundoff references. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a6eeb6229f0560c1d783b2940390250e4}{print\+\_\+results}} (const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a84e04eb8d0babf744caf6b567dc4471e}{Result\+Map}} \&all\+\_\+results, const std::\+string \&title)
+\begin{DoxyCompactList}\small\item\em Generate a multi-\/panel GNUplot figure for the CGS/\+\+MGSCGS2/\+\+MGS2 four precision error metrics. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a8badeab22d42fd0e94a3c95015ee403d}{print\+\_\+results2}} (const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aee752b13f80bc2082942d8127f803579}{Result\+Map2}} \&all\+\_\+results, const std::\+string \&title)
+\begin{DoxyCompactList}\small\item\em Generate a multi-\/panel GNUplot figure comparing uniform precision CGS/\+\+MGS to varying precision iterations CGS2/\+\+MGS2. \end{DoxyCompactList}\item 
+int \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a0ddf1224851353fc92bfbff6f499fa97}{main}} (int argc, char \texorpdfstring{$\ast$}{*}argv\+[$\,$]\+)
+\begin{DoxyCompactList}\small\item\em Entry point for the mixed-\/precision Gram-\/\+Schmidt test. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+static std::\+filesystem::\+path \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8}{matrix\+\_\+dir}} = "{}./\+matrix/\+"{}
+\item 
+static std::\+filesystem::\+path \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\+\_\+dir}} = "{}gnuplot/\+data"{}
+\item 
+static std::\+filesystem::\+path \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_af22361a1965bc3aabab7c79dce82c618}{plot\+\_\+dir}} = "{}./\+gnuplot"{}
+\item 
+static std::\+size\+\_\+t \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}} = 100
+\item 
+static std::\+size\+\_\+t \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}} = 10
+\item 
+static constexpr std::\+array$<$ const char \texorpdfstring{$\ast$}{*}, 9 $>$ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ab9f644b4fd81edcd01d35f1c8d464535}{precision\+\_\+names}}
+\item 
+static \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a84e04eb8d0babf744caf6b567dc4471e}{Result\+Map}} \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a298930a640b46582a2c8f2a48c6b5398}{results}}
+\begin{DoxyCompactList}\small\item\em Stores results of four precision runs before they are reordered into the plot data and saved to file later. \end{DoxyCompactList}\item 
+static \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aee752b13f80bc2082942d8127f803579}{Result\+Map2}} \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_afe0ed161afbbbdbfde02ac48352398b1}{results2}}
+\begin{DoxyCompactList}\small\item\em Stores results of two precision runs before they are reordered into the plot data and saved to file later. \end{DoxyCompactList}\item 
+static std::\+string \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a0d7ac8de6102b9232af1f7682e00b3f3}{seed\+\_\+str}}
+\begin{DoxyCompactList}\small\item\em seed\+\_\+str is first read in from the matrix file name and then stored globally to be later used in the plot file name \end{DoxyCompactList}\item 
+static std::\+vector$<$ std::\+size\+\_\+t $>$ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ad508532175c1371713583af16aee036c}{roundoff\+\_\+indices}}
+\begin{DoxyCompactList}\small\item\em Stores \doxylink{gram__schmidt__mixed_8cc_a34c63a3a70c5c1009f9a8816b3289a33}{Precision\+Tuple} indices of unit roundoffs to be added to the plots. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Mixed-\/precision Gram-\/\+Schmidt example driver focused on plotting error differences between precisions. 
+
+Runs classical and modified Gram-\/\+Schmidt (CGS/\+\+MGS) and the corresponding re-\/orthogonalisation (CGS2/\+\+MGS2) in mixed precisions for a variety of floating-\/point types.
+
+For this two different versions are possible:\+
+\begin{DoxyItemize}
+\item using four different precisions for different operations
+\item using two different precisions for the two iterations of CGS/\+\+MGS in CGS2/\+\+MGS2 (for the CGS/\+\+MGS plots the second precision is used for all operations (no mixed precision))
+\end{DoxyItemize}
+
+Computes orthogonality and representation errors.
+
+Orders and saves results to file in ./\+gnuplot/\+ and uses gnuplot to print. 
+
+\label{doc-typedef-members}
+\Hypertarget{gram__schmidt__mixed_8cc_doc-typedef-members}
+\doxysubsection{Typedef Documentation}
+\Hypertarget{gram__schmidt__mixed_8cc_a645bda96cf352531595b41360fde608d}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!ComboKey@{ComboKey}}
+\index{ComboKey@{ComboKey}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{ComboKey}{ComboKey}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a645bda96cf352531595b41360fde608d} 
+using \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a645bda96cf352531595b41360fde608d}{Combo\+Key}} = std::\+tuple$<$std::\+size\+\_\+t, std::\+size\+\_\+t, std::\+size\+\_\+t, std::\+size\+\_\+t$>$}
+
+\Hypertarget{gram__schmidt__mixed_8cc_a7f80efc175c52dc19332b62d3bbca5b0}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!ComboKey2@{ComboKey2}}
+\index{ComboKey2@{ComboKey2}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{ComboKey2}{ComboKey2}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a7f80efc175c52dc19332b62d3bbca5b0} 
+using \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a7f80efc175c52dc19332b62d3bbca5b0}{Combo\+Key2}} = std::\+tuple$<$std::\+size\+\_\+t, std::\+size\+\_\+t$>$}
+
+\Hypertarget{gram__schmidt__mixed_8cc_a63ac726b6527571e7b2f1ac7b7f58d75}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!Precision@{Precision}}
+\index{Precision@{Precision}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{Precision}{Precision}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a63ac726b6527571e7b2f1ac7b7f58d75} 
+template$<$std::\+size\+\_\+t Index$>$ \\
+using \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a63ac726b6527571e7b2f1ac7b7f58d75}{Precision}} = std::\+tuple\+\_\+element\+\_\+t$<$Index, \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a34c63a3a70c5c1009f9a8816b3289a33}{Precision\+Tuple}}$>$}
+
+
+
+Shorthand to convert indices to precision types i.\+e. \doxylink{gram__schmidt__mixed_8cc_a63ac726b6527571e7b2f1ac7b7f58d75}{Precision$<$4$>$} =\texorpdfstring{$>$}{>} FP64. 
+
+\Hypertarget{gram__schmidt__mixed_8cc_a34c63a3a70c5c1009f9a8816b3289a33}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!PrecisionTuple@{PrecisionTuple}}
+\index{PrecisionTuple@{PrecisionTuple}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{PrecisionTuple}{PrecisionTuple}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a34c63a3a70c5c1009f9a8816b3289a33} 
+using \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a34c63a3a70c5c1009f9a8816b3289a33}{Precision\+Tuple}} = std::\+tuple$<$FP8, bfloat16, FP16, FP32, FP64, FP128, FP256, FP512, FP1024$>$}
+
+
+
+Tuple of all precision types that can be used. 
+
+The test iterates over elements of this tuple to instantiate mixed-\/precision variants of the Gram-\/\+Schmidt routines. \Hypertarget{gram__schmidt__mixed_8cc_a0da30825b41d263746800fdac3233b7e}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!recursive\_directory\_iterator@{recursive\_directory\_iterator}}
+\index{recursive\_directory\_iterator@{recursive\_directory\_iterator}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{recursive\_directory\_iterator}{recursive\_directory\_iterator}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a0da30825b41d263746800fdac3233b7e} 
+using \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a0da30825b41d263746800fdac3233b7e}{recursive\+\_\+directory\+\_\+iterator}} = std::\+filesystem::\+recursive\+\_\+directory\+\_\+iterator}
+
+\Hypertarget{gram__schmidt__mixed_8cc_a84e04eb8d0babf744caf6b567dc4471e}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!ResultMap@{ResultMap}}
+\index{ResultMap@{ResultMap}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{ResultMap}{ResultMap}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a84e04eb8d0babf744caf6b567dc4471e} 
+using \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a84e04eb8d0babf744caf6b567dc4471e}{Result\+Map}} = std::\+map$<$\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a645bda96cf352531595b41360fde608d}{Combo\+Key}}, std::\+map$<$double, \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}$>$$>$}
+
+
+
+\doxylink{gram__schmidt__mixed_8cc_a84e04eb8d0babf744caf6b567dc4471e}{Result\+Map} is used to store the results of four precision runs sorted by precision combination and kappa. 
+
+\Hypertarget{gram__schmidt__mixed_8cc_aee752b13f80bc2082942d8127f803579}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!ResultMap2@{ResultMap2}}
+\index{ResultMap2@{ResultMap2}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{ResultMap2}{ResultMap2}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_aee752b13f80bc2082942d8127f803579} 
+using \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aee752b13f80bc2082942d8127f803579}{Result\+Map2}} = std::\+map$<$\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a7f80efc175c52dc19332b62d3bbca5b0}{Combo\+Key2}}, std::\+map$<$double, \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}$>$$>$}
+
+
+
+\doxylink{gram__schmidt__mixed_8cc_aee752b13f80bc2082942d8127f803579}{Result\+Map2} is used to store the results of two precision runs sorted by precision combination and kappa. 
+
+
+
+\label{doc-func-members}
+\Hypertarget{gram__schmidt__mixed_8cc_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{gram__schmidt__mixed_8cc_a42690c9cac1d9cdf97ca65862bf08670}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!label\_slug@{label\_slug}}
+\index{label\_slug@{label\_slug}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{label\_slug()}{label\_slug()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a42690c9cac1d9cdf97ca65862bf08670} 
+std::\+string label\+\_\+slug (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a645bda96cf352531595b41360fde608d}{Combo\+Key}} \&}]{combo}{}\end{DoxyParamCaption})}
+
+
+
+Convert a precision-\/combination label into a filename-\/safe slug. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em label} & Precision-\/combination label to encode. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Slug suitable for use in generated plot-\/data filenames. 
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00244\ \ \ \ \ std::string\ label\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aaf448113b3ba6c968d33481093aa3111}{prec\_label}}(combo);}
+\DoxyCodeLine{00245\ \ \ \ \ std::replace(label.begin(),\ label.end(),\ \textcolor{charliteral}{'/'},\ \textcolor{charliteral}{'\_'});}
+\DoxyCodeLine{00246\ \ \ \ \ \textcolor{keywordflow}{return}\ label;}
+\DoxyCodeLine{00247\ \}}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_a37b800c526eacee971194affe2c4ddfd}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!label\_slug@{label\_slug}}
+\index{label\_slug@{label\_slug}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{label\_slug()}{label\_slug()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a37b800c526eacee971194affe2c4ddfd} 
+std::\+string label\+\_\+slug (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a7f80efc175c52dc19332b62d3bbca5b0}{Combo\+Key2}} \&}]{combo}{}\end{DoxyParamCaption})}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00250\ \ \ \ \ std::string\ label\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aaf448113b3ba6c968d33481093aa3111}{prec\_label}}(combo);}
+\DoxyCodeLine{00251\ \ \ \ \ std::replace(label.begin(),\ label.end(),\ \textcolor{charliteral}{'/'},\ \textcolor{charliteral}{'\_'});}
+\DoxyCodeLine{00252\ \ \ \ \ \textcolor{keywordflow}{return}\ label;}
+\DoxyCodeLine{00253\ \}}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_a0ddf1224851353fc92bfbff6f499fa97}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!main@{main}}
+\index{main@{main}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a0ddf1224851353fc92bfbff6f499fa97} 
+int main (\begin{DoxyParamCaption}\item[{int}]{argc}{, }\item[{char \texorpdfstring{$\ast$}{*}}]{argv}{\+[$\,$]\+}\end{DoxyParamCaption})}
+
+
+
+Entry point for the mixed-\/precision Gram-\/\+Schmidt test. 
+
+Loads all matching matrices from a runtime directory, runs the selected precision combinations, and plots the collected results against kappa. The directory holding the matrices and matrix dimensions can be given as command line arguments to use the same precision combination on different matrix selections.
+
+Note:\+ all precision combinations used in the final report are left in, but commented out. Only one plot is generated at a time, so only one of these settings can be run at a time
+
+Example (baseline):\+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{title\ =\ \textcolor{stringliteral}{"{}Mixed\ precision\ Gram-\/Schmidt\ baseline\ over\ low\ precision\ to\ double\ precision"{}};}
+\DoxyCodeLine{\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ad508532175c1371713583af16aee036c}{roundoff\_indices}}\ =\ \{0,1,2,3,4\};}
+\DoxyCodeLine{\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac09dd5aa605a876ac3e2455a3bea2e7b}{run\_precisions<0,0,0,0>}}(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}},\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}});}
+\DoxyCodeLine{\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac09dd5aa605a876ac3e2455a3bea2e7b}{run\_precisions<1,1,1,1>}}(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}},\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}});}
+\DoxyCodeLine{\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac09dd5aa605a876ac3e2455a3bea2e7b}{run\_precisions<2,2,2,2>}}(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}},\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}});}
+\DoxyCodeLine{\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac09dd5aa605a876ac3e2455a3bea2e7b}{run\_precisions<3,3,3,3>}}(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}},\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}});}
+\DoxyCodeLine{\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac09dd5aa605a876ac3e2455a3bea2e7b}{run\_precisions<4,4,4,4>}}(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}},\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}});}
+\DoxyCodeLine{\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a6eeb6229f0560c1d783b2940390250e4}{print\_results}}(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a298930a640b46582a2c8f2a48c6b5398}{results}},\ title);}
+
+\end{DoxyCode}
+
+
+Example (varying iteration precision for re-\/orthogonalisation):\+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{title2\ =\ \textcolor{stringliteral}{"{}Standard\ uniform\ precision\ CGS/MGS\ vs\ first\ iteration\ in\ low\ precision\ second\ iteration\ high\ precision\ CGS2/MGS2"{}};}
+\DoxyCodeLine{\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ad508532175c1371713583af16aee036c}{roundoff\_indices}}\ =\ \{3,4\};}
+\DoxyCodeLine{\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac09dd5aa605a876ac3e2455a3bea2e7b}{run\_precisions<1,4>}}(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}},\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}});}
+\DoxyCodeLine{\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac09dd5aa605a876ac3e2455a3bea2e7b}{run\_precisions<3,4>}}(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}},\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}});}
+\DoxyCodeLine{\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac09dd5aa605a876ac3e2455a3bea2e7b}{run\_precisions<4,4>}}(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}},\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}});}
+\DoxyCodeLine{\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac09dd5aa605a876ac3e2455a3bea2e7b}{run\_precisions<3,3>}}(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}},\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}});}
+\DoxyCodeLine{\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a8badeab22d42fd0e94a3c95015ee403d}{print\_results2}}(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_afe0ed161afbbbdbfde02ac48352398b1}{results2}},\ title2);}
+
+\end{DoxyCode}
+
+
+\begin{DoxyReturn}{Returns}
+Exit code (0 on success). 
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{01062\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{01063\ \ \ \ \ \textcolor{keywordflow}{if}\ (argc\ >=\ 2)\ \{}
+\DoxyCodeLine{01064\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8}{matrix\_dir}}\ =\ argv[1];}
+\DoxyCodeLine{01065\ \ \ \ \ \}}
+\DoxyCodeLine{01066\ \ \ \ \ \textcolor{keywordflow}{if}\ (argc\ >=\ 3)\ \{}
+\DoxyCodeLine{01067\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}}\ =\ std::stoul(argv[2]);}
+\DoxyCodeLine{01068\ \ \ \ \ \}}
+\DoxyCodeLine{01069\ \ \ \ \ \textcolor{keywordflow}{if}\ (argc\ >=\ 4)\ \{}
+\DoxyCodeLine{01070\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}}\ =\ std::stoul(argv[3]);}
+\DoxyCodeLine{01071\ \ \ \ \ \}}
+\DoxyCodeLine{01072\ }
+\DoxyCodeLine{01073\ \ \ \ \ \textcolor{keywordflow}{if}\ (!std::filesystem::exists(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8}{matrix\_dir}}))\ \{}
+\DoxyCodeLine{01074\ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}Input\ directory\ does\ not\ exist:\ "{}}\ <<\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8}{matrix\_dir}}\ <<\ std::endl;}
+\DoxyCodeLine{01075\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ 1;}
+\DoxyCodeLine{01076\ \ \ \ \ \}}
+\DoxyCodeLine{01077\ \ \ \ \ \textcolor{keywordflow}{if}\ (!std::filesystem::is\_directory(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8}{matrix\_dir}}))\ \{}
+\DoxyCodeLine{01078\ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}Input\ path\ is\ not\ a\ directory:\ "{}}\ <<\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8}{matrix\_dir}}\ <<\ std::endl;}
+\DoxyCodeLine{01079\ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}Usage:\ ./mgs\_run\ [matrix\_directory]\ [n]\ [m]"{}}\ <<\ std::endl;}
+\DoxyCodeLine{01080\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ 1;}
+\DoxyCodeLine{01081\ \ \ \ \ \}}
+\DoxyCodeLine{01082\ }
+\DoxyCodeLine{01083\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a298930a640b46582a2c8f2a48c6b5398}{results}}.clear();}
+\DoxyCodeLine{01084\ }
+\DoxyCodeLine{01085\ \ \ \ \ \textcolor{comment}{//\ default\ titles}}
+\DoxyCodeLine{01086\ \ \ \ \ std::string\ title\ =\ \textcolor{stringliteral}{"{}Mixed\ precision\ Gram-\/Schmidt\ results"{}};}
+\DoxyCodeLine{01087\ \ \ \ \ std::string\ title2\ =\ \textcolor{stringliteral}{"{}Standard\ uniform\ precision\ CGS/MGS\ vs\ first\ iteration\ in\ low\ precision\ second\ iteration\ high\ precision\ CGS2/MGS2"{}};}
+\DoxyCodeLine{01088\ }
+\DoxyCodeLine{01089\ }
+\DoxyCodeLine{01090\ \ \ \ \ \textcolor{comment}{//\ Settings\ used\ in\ report:}}
+\DoxyCodeLine{01091\ }
+\DoxyCodeLine{01092\ \ \ \ \ \textcolor{comment}{//\ run\ gram\ schmidt\ without\ mixed\ precision\ as\ a\ baseline\ (only\ to\ FP64)}}
+\DoxyCodeLine{01093\ \ \ \ \ \textcolor{comment}{//\ title\ =\ "{}Mixed\ precision\ Gram-\/Schmidt\ baseline\ FP8\ to\ FP64"{};}}
+\DoxyCodeLine{01094\ \ \ \ \ \textcolor{comment}{//\ roundoff\_indices\ =\ \{0,1,2,3,4\};}}
+\DoxyCodeLine{01095\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<0,0,0,0>();}}
+\DoxyCodeLine{01096\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<1,1,1,1>();}}
+\DoxyCodeLine{01097\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<2,2,2,2>();}}
+\DoxyCodeLine{01098\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<3,3,3,3>();}}
+\DoxyCodeLine{01099\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<4,4,4,4>();}}
+\DoxyCodeLine{01100\ \ \ \ \ \textcolor{comment}{//\ print\_results(results,\ title);}}
+\DoxyCodeLine{01101\ }
+\DoxyCodeLine{01102\ \ \ \ \ \textcolor{comment}{//\ run\ gram\ schmidt\ without\ mixed\ precision\ as\ a\ baseline\ (GMP)}}
+\DoxyCodeLine{01103\ \ \ \ \ \textcolor{comment}{//\ this\ one\ was\ only\ mentioned\ in\ report}}
+\DoxyCodeLine{01104\ \ \ \ \ \textcolor{comment}{//\ title\ =\ "{}Mixed\ precision\ Gram-\/Schmidt\ baseline\ for\ high\ precisions"{};}}
+\DoxyCodeLine{01105\ \ \ \ \ \textcolor{comment}{//\ roundoff\_indices\ =\ \{5,6,7,8\};}}
+\DoxyCodeLine{01106\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<5,5,5,5>();}}
+\DoxyCodeLine{01107\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<6,6,6,6>();}}
+\DoxyCodeLine{01108\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<7,7,7,7>();}}
+\DoxyCodeLine{01109\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<8,8,8,8>();}}
+\DoxyCodeLine{01110\ \ \ \ \ \textcolor{comment}{//\ print\_results(results,\ title);}}
+\DoxyCodeLine{01111\ }
+\DoxyCodeLine{01112\ \ \ \ \ \textcolor{comment}{//\ test\ 'saving'\ on\ FP64}}
+\DoxyCodeLine{01113\ \ \ \ \ \textcolor{comment}{//\ title\ =\ "{}Mixed\ precision\ Gram-\/Schmidt\ test\ using\ lower\ precision\ for\ one\ operation\ type"{};}}
+\DoxyCodeLine{01114\ \ \ \ \ \textcolor{comment}{//\ roundoff\_indices\ =\ \{3,4\};}}
+\DoxyCodeLine{01115\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<4,4,4,4>();}}
+\DoxyCodeLine{01116\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<4,3,4,4>();}}
+\DoxyCodeLine{01117\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<4,4,3,4>();}}
+\DoxyCodeLine{01118\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<4,4,4,3>();}}
+\DoxyCodeLine{01119\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<4,3,3,3>();}}
+\DoxyCodeLine{01120\ \ \ \ \ \textcolor{comment}{//\ print\_results(results,\ title);}}
+\DoxyCodeLine{01121\ }
+\DoxyCodeLine{01122\ \ \ \ \ \textcolor{comment}{//\ compare\ over\ FP32/FP64}}
+\DoxyCodeLine{01123\ \ \ \ \ \textcolor{comment}{//\ title\ =\ "{}Mixed\ precision\ Gram-\/Schmidt\ test\ using\ higher\ precision\ for\ one\ operation\ type"{};}}
+\DoxyCodeLine{01124\ \ \ \ \ \textcolor{comment}{//\ roundoff\_indices\ =\ \{3\};}}
+\DoxyCodeLine{01125\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<3,3,3,3>();}}
+\DoxyCodeLine{01126\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<3,4,3,3>();}}
+\DoxyCodeLine{01127\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<3,3,4,3>();}}
+\DoxyCodeLine{01128\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<3,3,3,4>();}}
+\DoxyCodeLine{01129\ \ \ \ \ \textcolor{comment}{//\ print\_results(results,\ title);}}
+\DoxyCodeLine{01130\ }
+\DoxyCodeLine{01131\ \ \ \ \ \textcolor{comment}{//\ compare\ over\ FP64/FP128}}
+\DoxyCodeLine{01132\ \ \ \ \ \textcolor{comment}{//\ title\ =\ "{}Mixed\ precision\ Gram-\/Schmidt\ test\ using\ higher\ precision\ for\ one\ operation\ type"{};}}
+\DoxyCodeLine{01133\ \ \ \ \ \textcolor{comment}{//\ roundoff\_indices\ =\ \{4\};}}
+\DoxyCodeLine{01134\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<4,4,4,4>();}}
+\DoxyCodeLine{01135\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<4,5,4,4>();}}
+\DoxyCodeLine{01136\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<4,4,5,4>();}}
+\DoxyCodeLine{01137\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<4,4,4,5>();}}
+\DoxyCodeLine{01138\ \ \ \ \ \textcolor{comment}{//\ print\_results(results,\ title);}}
+\DoxyCodeLine{01139\ }
+\DoxyCodeLine{01140\ \ \ \ \ \textcolor{comment}{//\ compare\ over\ FP64/FP1024}}
+\DoxyCodeLine{01141\ \ \ \ \ \textcolor{comment}{//\ title\ =\ "{}Mixed\ precision\ Gram-\/Schmidt\ test\ using\ higher\ precision\ for\ one\ operation\ type"{};}}
+\DoxyCodeLine{01142\ \ \ \ \ \textcolor{comment}{//\ this\ one\ was\ only\ mentioned\ in\ report}}
+\DoxyCodeLine{01143\ \ \ \ \ \textcolor{comment}{//\ roundoff\_indices\ =\ \{4\};}}
+\DoxyCodeLine{01144\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<4,4,4,4>();}}
+\DoxyCodeLine{01145\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<4,8,4,4>();}}
+\DoxyCodeLine{01146\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<4,4,8,4>();}}
+\DoxyCodeLine{01147\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<4,4,4,8>();}}
+\DoxyCodeLine{01148\ \ \ \ \ \textcolor{comment}{//\ print\_results(results,\ title);}}
+\DoxyCodeLine{01149\ }
+\DoxyCodeLine{01150\ \ \ \ \ \textcolor{comment}{//\ fixed\ low\ projection\ +\ normalization,\ high\ inner\ product}}
+\DoxyCodeLine{01151\ \ \ \ \ \textcolor{comment}{//\ title\ =\ "{}Mixed\ precision\ Gram-\/Schmidt:\ high\ precision\ inner\ products,\ low\ precison\ projections\ and\ normalisation"{};}}
+\DoxyCodeLine{01152\ \ \ \ \ \textcolor{comment}{//\ roundoff\_indices\ =\ \{1,3\};}}
+\DoxyCodeLine{01153\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<4,8,1,1>();}}
+\DoxyCodeLine{01154\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<4,8,3,3>();}}
+\DoxyCodeLine{01155\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<4,1,1,1>();}}
+\DoxyCodeLine{01156\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<4,3,3,3>();}}
+\DoxyCodeLine{01157\ \ \ \ \ \textcolor{comment}{//\ print\_results(results,\ title);}}
+\DoxyCodeLine{01158\ }
+\DoxyCodeLine{01159\ \ \ \ \ \textcolor{comment}{//\ test\ CGS2.2}}
+\DoxyCodeLine{01160\ \ \ \ \ \textcolor{comment}{//\ title2\ =\ "{}Mixed\ precision\ Gram-\/Schmidt:\ re-\/orthogonalisation\ with\ higher\ precision"{};}}
+\DoxyCodeLine{01161\ \ \ \ \ \textcolor{comment}{//\ roundoff\_indices\ =\ \{1,3,4\};}}
+\DoxyCodeLine{01162\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<1,4>();}}
+\DoxyCodeLine{01163\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<3,4>();}}
+\DoxyCodeLine{01164\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<4,4>();}}
+\DoxyCodeLine{01165\ \ \ \ \ \textcolor{comment}{//\ run\_precisions<3,3>();}}
+\DoxyCodeLine{01166\ \ \ \ \ \textcolor{comment}{//\ print\_results2(results2,\ title2);}}
+\DoxyCodeLine{01167\ }
+\DoxyCodeLine{01168\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{01169\ \}}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_aaf448113b3ba6c968d33481093aa3111}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!prec\_label@{prec\_label}}
+\index{prec\_label@{prec\_label}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{prec\_label()}{prec\_label()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_aaf448113b3ba6c968d33481093aa3111} 
+std::\+string prec\+\_\+label (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a645bda96cf352531595b41360fde608d}{Combo\+Key}} \&}]{combo}{}\end{DoxyParamCaption})}
+
+
+
+Create a human-\/readable label for a precision-\/combination tuple. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em combo} & Tuple containing the matrix, inner-\/product, normalization, and accumulation precision indices. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+String describing the selected precision combination. 
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ab9f644b4fd81edcd01d35f1c8d464535}{precision\_names}}[std::get<0>(combo)]\ +\ std::string(\textcolor{stringliteral}{"{}/"{}})\ +}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ab9f644b4fd81edcd01d35f1c8d464535}{precision\_names}}[std::get<1>(combo)]\ +\ std::string(\textcolor{stringliteral}{"{}/"{}})\ +}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ab9f644b4fd81edcd01d35f1c8d464535}{precision\_names}}[std::get<2>(combo)]\ +\ std::string(\textcolor{stringliteral}{"{}/"{}})\ +}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ab9f644b4fd81edcd01d35f1c8d464535}{precision\_names}}[std::get<3>(combo)];}
+\DoxyCodeLine{00111\ \}}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_a53ef918716e33f39fd78e652918e9c82}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!prec\_label@{prec\_label}}
+\index{prec\_label@{prec\_label}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{prec\_label()}{prec\_label()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a53ef918716e33f39fd78e652918e9c82} 
+std::\+string prec\+\_\+label (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a7f80efc175c52dc19332b62d3bbca5b0}{Combo\+Key2}} \&}]{combo}{}\end{DoxyParamCaption})}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ab9f644b4fd81edcd01d35f1c8d464535}{precision\_names}}[std::get<0>(combo)]\ +\ std::string(\textcolor{stringliteral}{"{}/"{}})\ +}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ab9f644b4fd81edcd01d35f1c8d464535}{precision\_names}}[std::get<1>(combo)];}
+\DoxyCodeLine{00117\ \}}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_aeb719ced00a61b0b028d4b3b5f90fc08}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!prec\_label1@{prec\_label1}}
+\index{prec\_label1@{prec\_label1}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{prec\_label1()}{prec\_label1()}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_aeb719ced00a61b0b028d4b3b5f90fc08} 
+std::\+string prec\+\_\+label1 (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a7f80efc175c52dc19332b62d3bbca5b0}{Combo\+Key2}} \&}]{combo}{}\end{DoxyParamCaption})}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00121\ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ab9f644b4fd81edcd01d35f1c8d464535}{precision\_names}}[std::get<1>(combo)];}
+\DoxyCodeLine{00122\ \}}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_a6eeb6229f0560c1d783b2940390250e4}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!print\_results@{print\_results}}
+\index{print\_results@{print\_results}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{print\_results()}{print\_results()}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a6eeb6229f0560c1d783b2940390250e4} 
+void print\+\_\+results (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a84e04eb8d0babf744caf6b567dc4471e}{Result\+Map}} \&}]{all\+\_\+results}{, }\item[{const std::\+string \&}]{title}{}\end{DoxyParamCaption})}
+
+
+
+Generate a multi-\/panel GNUplot figure for the CGS/\+\+MGSCGS2/\+\+MGS2 four precision error metrics. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em all\+\_\+results} & Results indexed by precision combination label and condition number. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00648\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00649\ \ \ \ \ std::filesystem::create\_directories(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}});}
+\DoxyCodeLine{00650\ }
+\DoxyCodeLine{00651\ \ \ \ \ \textcolor{comment}{//\ write\ metric\ data\ to\ file}}
+\DoxyCodeLine{00652\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ cgs\_ortho\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a7ed8162f9ffe5f19f2a59313c43f2f6c}{write\_metric\_data}}(}
+\DoxyCodeLine{00653\ \ \ \ \ \ \ \ \ all\_results,}
+\DoxyCodeLine{00654\ \ \ \ \ \ \ \ \ [](\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\&\ res)\ \{\ \textcolor{keywordflow}{return}\ res.\doxymbox{\hyperlink{structhdnum_1_1Result_a6f6940d7a69ce881e1058ca03bed0a1b}{ortho\_err\_cgs}};\ \},}
+\DoxyCodeLine{00655\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}cgs\_orthogonality\_error"{}},}
+\DoxyCodeLine{00656\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}});}
+\DoxyCodeLine{00657\ }
+\DoxyCodeLine{00658\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ mgs\_ortho\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a7ed8162f9ffe5f19f2a59313c43f2f6c}{write\_metric\_data}}(}
+\DoxyCodeLine{00659\ \ \ \ \ \ \ \ \ all\_results,}
+\DoxyCodeLine{00660\ \ \ \ \ \ \ \ \ [](\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\&\ res)\ \{\ \textcolor{keywordflow}{return}\ res.\doxymbox{\hyperlink{structhdnum_1_1Result_ac2befeb6197e780a16e9696c609614de}{ortho\_err\_mgs}};\ \},}
+\DoxyCodeLine{00661\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}mgs\_orthogonality\_error"{}},}
+\DoxyCodeLine{00662\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}});}
+\DoxyCodeLine{00663\ \ \ \ \ }
+\DoxyCodeLine{00664\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ cgs2\_ortho\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a7ed8162f9ffe5f19f2a59313c43f2f6c}{write\_metric\_data}}(}
+\DoxyCodeLine{00665\ \ \ \ \ \ \ \ \ all\_results,}
+\DoxyCodeLine{00666\ \ \ \ \ \ \ \ \ [](\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\&\ res)\ \{\ \textcolor{keywordflow}{return}\ res.\doxymbox{\hyperlink{structhdnum_1_1Result_aeeb492859c39288811c7d8f4aa9655b7}{ortho\_err\_cgs2}};\ \},}
+\DoxyCodeLine{00667\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}cgs2\_orthogonality\_error"{}},}
+\DoxyCodeLine{00668\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}});}
+\DoxyCodeLine{00669\ }
+\DoxyCodeLine{00670\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ mgs2\_ortho\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a7ed8162f9ffe5f19f2a59313c43f2f6c}{write\_metric\_data}}(}
+\DoxyCodeLine{00671\ \ \ \ \ \ \ \ \ all\_results,}
+\DoxyCodeLine{00672\ \ \ \ \ \ \ \ \ [](\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\&\ res)\ \{\ \textcolor{keywordflow}{return}\ res.\doxymbox{\hyperlink{structhdnum_1_1Result_ab65e6020118c95bad03a4e8c9ef41faf}{ortho\_err\_mgs2}};\ \},}
+\DoxyCodeLine{00673\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}mgs2\_orthogonality\_error"{}},}
+\DoxyCodeLine{00674\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}});}
+\DoxyCodeLine{00675\ }
+\DoxyCodeLine{00676\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ cgs\_rep\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a7ed8162f9ffe5f19f2a59313c43f2f6c}{write\_metric\_data}}(}
+\DoxyCodeLine{00677\ \ \ \ \ \ \ \ \ all\_results,}
+\DoxyCodeLine{00678\ \ \ \ \ \ \ \ \ [](\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\&\ res)\ \{\ \textcolor{keywordflow}{return}\ res.\doxymbox{\hyperlink{structhdnum_1_1Result_ac84002b61a6b39976565939a9d07a7f8}{rep\_err\_cgs}};\ \},}
+\DoxyCodeLine{00679\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}cgs\_representation\_error"{}},}
+\DoxyCodeLine{00680\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}});}
+\DoxyCodeLine{00681\ \ \ \ \ }
+\DoxyCodeLine{00682\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ cgs2\_rep\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a7ed8162f9ffe5f19f2a59313c43f2f6c}{write\_metric\_data}}(}
+\DoxyCodeLine{00683\ \ \ \ \ \ \ \ \ all\_results,}
+\DoxyCodeLine{00684\ \ \ \ \ \ \ \ \ [](\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\&\ res)\ \{\ \textcolor{keywordflow}{return}\ res.\doxymbox{\hyperlink{structhdnum_1_1Result_a3fe611d80928fe218766ca81cb88da63}{rep\_err\_cgs2}};\ \},}
+\DoxyCodeLine{00685\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}cgs2\_representation\_error"{}},}
+\DoxyCodeLine{00686\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}});}
+\DoxyCodeLine{00687\ }
+\DoxyCodeLine{00688\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ mgs\_rep\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a7ed8162f9ffe5f19f2a59313c43f2f6c}{write\_metric\_data}}(}
+\DoxyCodeLine{00689\ \ \ \ \ \ \ \ \ all\_results,}
+\DoxyCodeLine{00690\ \ \ \ \ \ \ \ \ [](\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\&\ res)\ \{\ \textcolor{keywordflow}{return}\ res.\doxymbox{\hyperlink{structhdnum_1_1Result_a1f5edf945c2da0d145fe4adbb6deed4d}{rep\_err\_mgs}};\ \},}
+\DoxyCodeLine{00691\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}mgs\_representation\_error"{}},}
+\DoxyCodeLine{00692\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}});}
+\DoxyCodeLine{00693\ }
+\DoxyCodeLine{00694\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ mgs2\_rep\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a7ed8162f9ffe5f19f2a59313c43f2f6c}{write\_metric\_data}}(}
+\DoxyCodeLine{00695\ \ \ \ \ \ \ \ \ all\_results,}
+\DoxyCodeLine{00696\ \ \ \ \ \ \ \ \ [](\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\&\ res)\ \{\ \textcolor{keywordflow}{return}\ res.\doxymbox{\hyperlink{structhdnum_1_1Result_a08f58e045f8cc8f59e59eaa58fdc0109}{rep\_err\_mgs2}};\ \},}
+\DoxyCodeLine{00697\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}mgs2\_representation\_error"{}},}
+\DoxyCodeLine{00698\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}});}
+\DoxyCodeLine{00699\ }
+\DoxyCodeLine{00700\ \ \ \ \ \textcolor{comment}{//\ add\ seed\ and\ timestamp\ to\ filename}}
+\DoxyCodeLine{00701\ \ \ \ \ \textcolor{keyword}{auto}\ t\ =\ std::time(NULL);}
+\DoxyCodeLine{00702\ \ \ \ \ \textcolor{keyword}{auto}\ tm\ =\ *std::localtime(\&t);}
+\DoxyCodeLine{00703\ \ \ \ \ std::ostringstream\ oss;}
+\DoxyCodeLine{00704\ \ \ \ \ oss\ <<\ std::put\_time(\&tm,\ \textcolor{stringliteral}{"{}\%Y-\/\%m-\/\%d\_\%H-\/\%M"{}});}
+\DoxyCodeLine{00705\ \ \ \ \ std::string\ timestamp\ =\ oss.str();}
+\DoxyCodeLine{00706\ \ \ \ \ std\ ::string\ plot\_name\ =\ \textcolor{stringliteral}{"{}mgs\_plot\_"{}}\ +\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a0d7ac8de6102b9232af1f7682e00b3f3}{seed\_str}}\ +\ \textcolor{stringliteral}{"{}\_"{}}\ +\ timestamp\ +\ \textcolor{stringliteral}{"{}.png"{}};}
+\DoxyCodeLine{00707\ \ \ \ \ \textcolor{keyword}{const}\ std::filesystem::path\ script\_file\ =\ \textcolor{stringliteral}{"{}gram\_schmidt\_mixed\_plots.gp"{}};}
+\DoxyCodeLine{00708\ \ \ \ \ \textcolor{keyword}{const}\ std::filesystem::path\ plot\_file\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_af22361a1965bc3aabab7c79dce82c618}{plot\_dir}}\ /\ plot\_name;}
+\DoxyCodeLine{00709\ }
+\DoxyCodeLine{00710\ \ \ \ \ std::ofstream\ script(script\_file);}
+\DoxyCodeLine{00711\ \ \ \ \ \textcolor{keywordflow}{if}\ (!script)\ \{}
+\DoxyCodeLine{00712\ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}Failed\ to\ open\ gnuplot\ script\ file:\ "{}}\ <<\ script\_file\ <<\ std::endl;}
+\DoxyCodeLine{00713\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00714\ \ \ \ \ \}}
+\DoxyCodeLine{00715\ }
+\DoxyCodeLine{00716\ \ \ \ \ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ terminal\ pngcairo\ size\ 3000,1200\ enhanced\ font\ ',16'\(\backslash\)n"{}};}
+\DoxyCodeLine{00717\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ output\ '"{}}\ <<\ plot\_file.string()\ <<\ \textcolor{stringliteral}{"{}'\(\backslash\)n"{}};}
+\DoxyCodeLine{00718\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ multiplot\ title\ '"{}}\ <<\ title\ <<\ \textcolor{stringliteral}{"{}'\(\backslash\)n"{}};}
+\DoxyCodeLine{00719\ }
+\DoxyCodeLine{00720\ \ \ \ \ \textcolor{comment}{//\ set\ position\ and\ size\ of\ each\ panel\ in\ the\ multiplot\ layout}}
+\DoxyCodeLine{00721\ \ \ \ \ \textcolor{keywordtype}{double}\ space\ =\ 0.0;}
+\DoxyCodeLine{00722\ \ \ \ \ \textcolor{keywordtype}{double}\ legend\_width\ =\ 0.99;}
+\DoxyCodeLine{00723\ \ \ \ \ \textcolor{keywordtype}{double}\ legend\_height\ =\ 0.06;}
+\DoxyCodeLine{00724\ \ \ \ \ \textcolor{keywordtype}{double}\ plot\_width\ =\ (1\ -\/\ 3*space)\ /\ 4;}
+\DoxyCodeLine{00725\ \ \ \ \ \textcolor{keywordtype}{double}\ plot\_height\ =\ (1\ -\/\ legend\_height\ -\/\ 2*space)\ /\ 2;}
+\DoxyCodeLine{00726\ \ \ \ \ }
+\DoxyCodeLine{00727\ }
+\DoxyCodeLine{00728\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ab74494055de04f91ccae9691954ca978}{write\_combined\_legend\_panel}}(script,}
+\DoxyCodeLine{00729\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cgs\_ortho,}
+\DoxyCodeLine{00730\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ad508532175c1371713583af16aee036c}{roundoff\_indices}},}
+\DoxyCodeLine{00731\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.00,}
+\DoxyCodeLine{00732\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (2*plot\_height\ +\ space),}
+\DoxyCodeLine{00733\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ legend\_width,}
+\DoxyCodeLine{00734\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ legend\_height);}
+\DoxyCodeLine{00735\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a717d4c71d52243a7284f3e964b4b51b3}{write\_plot\_panel}}(script,}
+\DoxyCodeLine{00736\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}CGS\ loss\ of\ orthogonality\ vs\ kappa"{}},}
+\DoxyCodeLine{00737\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}orthogonality\ error"{}},}
+\DoxyCodeLine{00738\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cgs\_ortho,}
+\DoxyCodeLine{00739\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}},}
+\DoxyCodeLine{00740\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.00,}
+\DoxyCodeLine{00741\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (plot\_height\ +\ space),}
+\DoxyCodeLine{00742\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_width,}
+\DoxyCodeLine{00743\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_height);}
+\DoxyCodeLine{00744\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a717d4c71d52243a7284f3e964b4b51b3}{write\_plot\_panel}}(script,}
+\DoxyCodeLine{00745\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}MGS\ loss\ of\ orthogonality\ vs\ kappa"{}},}
+\DoxyCodeLine{00746\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}orthogonality\ error"{}},}
+\DoxyCodeLine{00747\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ mgs\_ortho,}
+\DoxyCodeLine{00748\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}},}
+\DoxyCodeLine{00749\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (plot\_width\ +\ space),}
+\DoxyCodeLine{00750\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (plot\_height\ +\ space),}
+\DoxyCodeLine{00751\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_width,}
+\DoxyCodeLine{00752\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_height);}
+\DoxyCodeLine{00753\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a717d4c71d52243a7284f3e964b4b51b3}{write\_plot\_panel}}(script,}
+\DoxyCodeLine{00754\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}CGS2\ loss\ of\ orthogonality\ vs\ kappa"{}},}
+\DoxyCodeLine{00755\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}orthogonality\ error"{}},}
+\DoxyCodeLine{00756\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cgs2\_ortho,}
+\DoxyCodeLine{00757\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}},}
+\DoxyCodeLine{00758\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (2*plot\_width\ +\ 2*space),}
+\DoxyCodeLine{00759\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (plot\_height\ +\ space),}
+\DoxyCodeLine{00760\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_width,}
+\DoxyCodeLine{00761\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_height);}
+\DoxyCodeLine{00762\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a717d4c71d52243a7284f3e964b4b51b3}{write\_plot\_panel}}(script,}
+\DoxyCodeLine{00763\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}MGS2\ loss\ of\ orthogonality\ vs\ kappa"{}},}
+\DoxyCodeLine{00764\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}orthogonality\ error"{}},}
+\DoxyCodeLine{00765\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ mgs2\_ortho,}
+\DoxyCodeLine{00766\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}},}
+\DoxyCodeLine{00767\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (3*plot\_width\ +\ 3*space),}
+\DoxyCodeLine{00768\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (plot\_height\ +\ space),}
+\DoxyCodeLine{00769\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_width,}
+\DoxyCodeLine{00770\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_height);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00771\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a717d4c71d52243a7284f3e964b4b51b3}{write\_plot\_panel}}(script,}
+\DoxyCodeLine{00772\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}CGS\ representation\ error\ vs\ kappa"{}},}
+\DoxyCodeLine{00773\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}relative\ representation\ error"{}},}
+\DoxyCodeLine{00774\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cgs\_rep,}
+\DoxyCodeLine{00775\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}},}
+\DoxyCodeLine{00776\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.00,}
+\DoxyCodeLine{00777\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.00,}
+\DoxyCodeLine{00778\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_width,}
+\DoxyCodeLine{00779\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_height);}
+\DoxyCodeLine{00780\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a717d4c71d52243a7284f3e964b4b51b3}{write\_plot\_panel}}(script,}
+\DoxyCodeLine{00781\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}MGS\ representation\ error\ vs\ kappa"{}},}
+\DoxyCodeLine{00782\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}relative\ representation\ error"{}},}
+\DoxyCodeLine{00783\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ mgs\_rep,}
+\DoxyCodeLine{00784\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}},}
+\DoxyCodeLine{00785\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (plot\_width\ +\ space),}
+\DoxyCodeLine{00786\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.00,}
+\DoxyCodeLine{00787\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_width,}
+\DoxyCodeLine{00788\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_height);}
+\DoxyCodeLine{00789\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a717d4c71d52243a7284f3e964b4b51b3}{write\_plot\_panel}}(script,}
+\DoxyCodeLine{00790\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}CGS2\ representation\ error\ vs\ kappa"{}},}
+\DoxyCodeLine{00791\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}relative\ representation\ error"{}},}
+\DoxyCodeLine{00792\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cgs2\_rep,}
+\DoxyCodeLine{00793\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}},}
+\DoxyCodeLine{00794\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (2*plot\_width\ +\ 2*space),}
+\DoxyCodeLine{00795\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.00,}
+\DoxyCodeLine{00796\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_width,}
+\DoxyCodeLine{00797\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_height);}
+\DoxyCodeLine{00798\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a717d4c71d52243a7284f3e964b4b51b3}{write\_plot\_panel}}(script,}
+\DoxyCodeLine{00799\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}MGS2\ representation\ error\ vs\ kappa"{}},}
+\DoxyCodeLine{00800\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}relative\ representation\ error"{}},}
+\DoxyCodeLine{00801\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ mgs2\_rep,}
+\DoxyCodeLine{00802\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}},}
+\DoxyCodeLine{00803\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (3*plot\_width\ +\ 3*space),}
+\DoxyCodeLine{00804\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.00,}
+\DoxyCodeLine{00805\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_width,}
+\DoxyCodeLine{00806\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_height);}
+\DoxyCodeLine{00807\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ multiplot\(\backslash\)n"{}};}
+\DoxyCodeLine{00808\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ output\(\backslash\)n"{}};}
+\DoxyCodeLine{00809\ \ \ \ \ script.close();}
+\DoxyCodeLine{00810\ }
+\DoxyCodeLine{00811\ \ \ \ \ \textcolor{keyword}{const}\ std::string\ command\ =\ \textcolor{stringliteral}{"{}gnuplot\ "{}}\ +\ script\_file.string();}
+\DoxyCodeLine{00812\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ exit\_code\ =\ std::system(command.c\_str());}
+\DoxyCodeLine{00813\ \ \ \ \ \textcolor{keywordflow}{if}\ (exit\_code\ ==\ 0)\ \{}
+\DoxyCodeLine{00814\ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}Wrote\ plot\ to\ "{}}\ <<\ plot\_file\ <<\ std::endl;}
+\DoxyCodeLine{00815\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00816\ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}Wrote\ gnuplot\ script\ to\ "{}}\ <<\ script\_file\ <<\ std::endl;}
+\DoxyCodeLine{00817\ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}Run\ manually\ with:\ gnuplot\ "{}}\ <<\ script\_file\ <<\ std::endl;}
+\DoxyCodeLine{00818\ \ \ \ \ \}}
+\DoxyCodeLine{00819\ \}}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_a8badeab22d42fd0e94a3c95015ee403d}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!print\_results2@{print\_results2}}
+\index{print\_results2@{print\_results2}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{print\_results2()}{print\_results2()}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a8badeab22d42fd0e94a3c95015ee403d} 
+void print\+\_\+results2 (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aee752b13f80bc2082942d8127f803579}{Result\+Map2}} \&}]{all\+\_\+results}{, }\item[{const std::\+string \&}]{title}{}\end{DoxyParamCaption})}
+
+
+
+Generate a multi-\/panel GNUplot figure comparing uniform precision CGS/\+\+MGS to varying precision iterations CGS2/\+\+MGS2. 
+
+Errors that were calculated previously in \doxylink{gram__schmidt__mixed_8cc_ac09dd5aa605a876ac3e2455a3bea2e7b}{run\+\_\+precisions()} and stored in Results are written to file for gnuplot to read in. Spacing between panels is set and gnuplot is called.
+
+
+\begin{DoxyParams}{Parameters}
+{\em all\+\_\+results} & Results indexed by precision combination and condition number. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00831\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00832\ \ \ \ \ std::filesystem::create\_directories(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}});}
+\DoxyCodeLine{00833\ }
+\DoxyCodeLine{00834\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ cgs\_ortho\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a01e623b3967fa5a9d743ba7ce3a32e60}{write\_metric\_data1}}(}
+\DoxyCodeLine{00835\ \ \ \ \ \ \ \ \ all\_results,}
+\DoxyCodeLine{00836\ \ \ \ \ \ \ \ \ [](\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\&\ res)\ \{\ \textcolor{keywordflow}{return}\ res.\doxymbox{\hyperlink{structhdnum_1_1Result_a6f6940d7a69ce881e1058ca03bed0a1b}{ortho\_err\_cgs}};\ \},}
+\DoxyCodeLine{00837\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}cgs\_orthogonality\_error"{}},}
+\DoxyCodeLine{00838\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}});}
+\DoxyCodeLine{00839\ }
+\DoxyCodeLine{00840\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ mgs\_ortho\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a01e623b3967fa5a9d743ba7ce3a32e60}{write\_metric\_data1}}(}
+\DoxyCodeLine{00841\ \ \ \ \ \ \ \ \ all\_results,}
+\DoxyCodeLine{00842\ \ \ \ \ \ \ \ \ [](\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\&\ res)\ \{\ \textcolor{keywordflow}{return}\ res.\doxymbox{\hyperlink{structhdnum_1_1Result_ac2befeb6197e780a16e9696c609614de}{ortho\_err\_mgs}};\ \},}
+\DoxyCodeLine{00843\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}mgs\_orthogonality\_error"{}},}
+\DoxyCodeLine{00844\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}});}
+\DoxyCodeLine{00845\ \ \ \ \ }
+\DoxyCodeLine{00846\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ cgs2\_ortho\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ab2a7d626a0b3d80fd847a21b282771b7}{write\_metric\_data2}}(}
+\DoxyCodeLine{00847\ \ \ \ \ \ \ \ \ all\_results,}
+\DoxyCodeLine{00848\ \ \ \ \ \ \ \ \ [](\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\&\ res)\ \{\ \textcolor{keywordflow}{return}\ res.\doxymbox{\hyperlink{structhdnum_1_1Result_aeeb492859c39288811c7d8f4aa9655b7}{ortho\_err\_cgs2}};\ \},}
+\DoxyCodeLine{00849\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}cgs2\_orthogonality\_error"{}},}
+\DoxyCodeLine{00850\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}});}
+\DoxyCodeLine{00851\ }
+\DoxyCodeLine{00852\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ mgs2\_ortho\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ab2a7d626a0b3d80fd847a21b282771b7}{write\_metric\_data2}}(}
+\DoxyCodeLine{00853\ \ \ \ \ \ \ \ \ all\_results,}
+\DoxyCodeLine{00854\ \ \ \ \ \ \ \ \ [](\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\&\ res)\ \{\ \textcolor{keywordflow}{return}\ res.\doxymbox{\hyperlink{structhdnum_1_1Result_ab65e6020118c95bad03a4e8c9ef41faf}{ortho\_err\_mgs2}};\ \},}
+\DoxyCodeLine{00855\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}mgs2\_orthogonality\_error"{}},}
+\DoxyCodeLine{00856\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}});}
+\DoxyCodeLine{00857\ }
+\DoxyCodeLine{00858\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ cgs\_rep\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a01e623b3967fa5a9d743ba7ce3a32e60}{write\_metric\_data1}}(}
+\DoxyCodeLine{00859\ \ \ \ \ \ \ \ \ all\_results,}
+\DoxyCodeLine{00860\ \ \ \ \ \ \ \ \ [](\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\&\ res)\ \{\ \textcolor{keywordflow}{return}\ res.\doxymbox{\hyperlink{structhdnum_1_1Result_ac84002b61a6b39976565939a9d07a7f8}{rep\_err\_cgs}};\ \},}
+\DoxyCodeLine{00861\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}cgs\_representation\_error"{}},}
+\DoxyCodeLine{00862\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}});}
+\DoxyCodeLine{00863\ \ \ \ \ }
+\DoxyCodeLine{00864\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ cgs2\_rep\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ab2a7d626a0b3d80fd847a21b282771b7}{write\_metric\_data2}}(}
+\DoxyCodeLine{00865\ \ \ \ \ \ \ \ \ all\_results,}
+\DoxyCodeLine{00866\ \ \ \ \ \ \ \ \ [](\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\&\ res)\ \{\ \textcolor{keywordflow}{return}\ res.\doxymbox{\hyperlink{structhdnum_1_1Result_a3fe611d80928fe218766ca81cb88da63}{rep\_err\_cgs2}};\ \},}
+\DoxyCodeLine{00867\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}cgs2\_representation\_error"{}},}
+\DoxyCodeLine{00868\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}});}
+\DoxyCodeLine{00869\ }
+\DoxyCodeLine{00870\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ mgs\_rep\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a01e623b3967fa5a9d743ba7ce3a32e60}{write\_metric\_data1}}(}
+\DoxyCodeLine{00871\ \ \ \ \ \ \ \ \ all\_results,}
+\DoxyCodeLine{00872\ \ \ \ \ \ \ \ \ [](\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\&\ res)\ \{\ \textcolor{keywordflow}{return}\ res.\doxymbox{\hyperlink{structhdnum_1_1Result_a1f5edf945c2da0d145fe4adbb6deed4d}{rep\_err\_mgs}};\ \},}
+\DoxyCodeLine{00873\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}mgs\_representation\_error"{}},}
+\DoxyCodeLine{00874\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}});}
+\DoxyCodeLine{00875\ }
+\DoxyCodeLine{00876\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ mgs2\_rep\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ab2a7d626a0b3d80fd847a21b282771b7}{write\_metric\_data2}}(}
+\DoxyCodeLine{00877\ \ \ \ \ \ \ \ \ all\_results,}
+\DoxyCodeLine{00878\ \ \ \ \ \ \ \ \ [](\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\&\ res)\ \{\ \textcolor{keywordflow}{return}\ res.\doxymbox{\hyperlink{structhdnum_1_1Result_a08f58e045f8cc8f59e59eaa58fdc0109}{rep\_err\_mgs2}};\ \},}
+\DoxyCodeLine{00879\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}mgs2\_representation\_error"{}},}
+\DoxyCodeLine{00880\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}});}
+\DoxyCodeLine{00881\ }
+\DoxyCodeLine{00882\ \ \ \ \ \textcolor{comment}{//\ add\ seed\ and\ timestamp\ to\ filename}}
+\DoxyCodeLine{00883\ \ \ \ \ \textcolor{keyword}{auto}\ t\ =\ std::time(NULL);}
+\DoxyCodeLine{00884\ \ \ \ \ \textcolor{keyword}{auto}\ tm\ =\ *std::localtime(\&t);}
+\DoxyCodeLine{00885\ \ \ \ \ std::ostringstream\ oss;}
+\DoxyCodeLine{00886\ \ \ \ \ oss\ <<\ std::put\_time(\&tm,\ \textcolor{stringliteral}{"{}\%Y-\/\%m-\/\%d\_\%H-\/\%M"{}});}
+\DoxyCodeLine{00887\ \ \ \ \ std::string\ timestamp\ =\ oss.str();}
+\DoxyCodeLine{00888\ \ \ \ \ std\ ::string\ plot\_name\ =\ \textcolor{stringliteral}{"{}mgs\_plot\_"{}}\ +\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a0d7ac8de6102b9232af1f7682e00b3f3}{seed\_str}}\ +\ \textcolor{stringliteral}{"{}\_"{}}\ +\ timestamp\ +\ \textcolor{stringliteral}{"{}.png"{}};}
+\DoxyCodeLine{00889\ \ \ \ \ \textcolor{keyword}{const}\ std::filesystem::path\ script\_file\ =\ \textcolor{stringliteral}{"{}gram\_schmidt\_mixed\_plots.gp"{}};}
+\DoxyCodeLine{00890\ \ \ \ \ \textcolor{keyword}{const}\ std::filesystem::path\ plot\_file\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_af22361a1965bc3aabab7c79dce82c618}{plot\_dir}}\ /\ plot\_name;}
+\DoxyCodeLine{00891\ }
+\DoxyCodeLine{00892\ \ \ \ \ std::ofstream\ script(script\_file);}
+\DoxyCodeLine{00893\ \ \ \ \ \textcolor{keywordflow}{if}\ (!script)\ \{}
+\DoxyCodeLine{00894\ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}Failed\ to\ open\ gnuplot\ script\ file:\ "{}}\ <<\ script\_file\ <<\ std::endl;}
+\DoxyCodeLine{00895\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00896\ \ \ \ \ \}}
+\DoxyCodeLine{00897\ }
+\DoxyCodeLine{00898\ \ \ \ \ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ terminal\ pngcairo\ size\ 3000,1200\ enhanced\ font\ ',16'\(\backslash\)n"{}};}
+\DoxyCodeLine{00899\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ output\ '"{}}\ <<\ plot\_file.string()\ <<\ \textcolor{stringliteral}{"{}'\(\backslash\)n"{}};}
+\DoxyCodeLine{00900\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ multiplot\ title\ '"{}}\ <<\ title\ <<\ \textcolor{stringliteral}{"{}'\(\backslash\)n"{}};}
+\DoxyCodeLine{00901\ }
+\DoxyCodeLine{00902\ \ \ \ \ \textcolor{comment}{//\ set\ position\ and\ size\ of\ each\ panel\ in\ the\ multiplot\ layout}}
+\DoxyCodeLine{00903\ \ \ \ \ \textcolor{keywordtype}{double}\ space\ =\ 0.0;}
+\DoxyCodeLine{00904\ \ \ \ \ \textcolor{keywordtype}{double}\ legend\_width\ =\ 0.33;}
+\DoxyCodeLine{00905\ \ \ \ \ \textcolor{keywordtype}{double}\ legend\_height\ =\ 0.06;}
+\DoxyCodeLine{00906\ \ \ \ \ \textcolor{keywordtype}{double}\ plot\_width\ =\ (1\ -\/\ 3*space)\ /\ 4;}
+\DoxyCodeLine{00907\ \ \ \ \ \textcolor{keywordtype}{double}\ plot\_height\ =\ (1\ -\/\ legend\_height\ -\/\ 2*space)\ /\ 2;}
+\DoxyCodeLine{00908\ \ \ \ \ }
+\DoxyCodeLine{00909\ }
+\DoxyCodeLine{00910\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a150f7beddb9736106b384e66df05e7fb}{write\_legend\_panel}}(script,}
+\DoxyCodeLine{00911\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cgs\_ortho,}
+\DoxyCodeLine{00912\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.00,}
+\DoxyCodeLine{00913\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (2*plot\_height\ +\ space),}
+\DoxyCodeLine{00914\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ legend\_width,}
+\DoxyCodeLine{00915\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ legend\_height);}
+\DoxyCodeLine{00916\ \ \ \ \ std::vector<PlotSeries>\ roundoff\_legend\_series\ =\ cgs\_ortho;}
+\DoxyCodeLine{00917\ \ \ \ \ roundoff\_legend\_series.insert(roundoff\_legend\_series.end(),\ mgs\_ortho.begin(),\ mgs\_ortho.end());}
+\DoxyCodeLine{00918\ \ \ \ \ roundoff\_legend\_series.insert(roundoff\_legend\_series.end(),\ cgs2\_ortho.begin(),\ cgs2\_ortho.end());}
+\DoxyCodeLine{00919\ \ \ \ \ roundoff\_legend\_series.insert(roundoff\_legend\_series.end(),\ mgs2\_ortho.begin(),\ mgs2\_ortho.end());}
+\DoxyCodeLine{00920\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aa7cc7ecd93d1acc602ead6bc5641cd81}{write\_roundoff\_legend\_panel}}(script,}
+\DoxyCodeLine{00921\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ad508532175c1371713583af16aee036c}{roundoff\_indices}},}
+\DoxyCodeLine{00922\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.33,}
+\DoxyCodeLine{00923\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (2*plot\_height\ +\ space),}
+\DoxyCodeLine{00924\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ legend\_width,}
+\DoxyCodeLine{00925\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ legend\_height);}
+\DoxyCodeLine{00926\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a150f7beddb9736106b384e66df05e7fb}{write\_legend\_panel}}(script,}
+\DoxyCodeLine{00927\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cgs2\_ortho,}
+\DoxyCodeLine{00928\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.66,}
+\DoxyCodeLine{00929\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (2*plot\_height\ +\ space),}
+\DoxyCodeLine{00930\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ legend\_width,}
+\DoxyCodeLine{00931\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ legend\_height);}
+\DoxyCodeLine{00932\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a717d4c71d52243a7284f3e964b4b51b3}{write\_plot\_panel}}(script,}
+\DoxyCodeLine{00933\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}CGS\ loss\ of\ orthogonality\ vs\ kappa"{}},}
+\DoxyCodeLine{00934\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}orthogonality\ error"{}},}
+\DoxyCodeLine{00935\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cgs\_ortho,}
+\DoxyCodeLine{00936\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}},}
+\DoxyCodeLine{00937\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.00,}
+\DoxyCodeLine{00938\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (plot\_height\ +\ space),}
+\DoxyCodeLine{00939\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_width,}
+\DoxyCodeLine{00940\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_height);}
+\DoxyCodeLine{00941\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a717d4c71d52243a7284f3e964b4b51b3}{write\_plot\_panel}}(script,}
+\DoxyCodeLine{00942\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}MGS\ loss\ of\ orthogonality\ vs\ kappa"{}},}
+\DoxyCodeLine{00943\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}orthogonality\ error"{}},}
+\DoxyCodeLine{00944\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ mgs\_ortho,}
+\DoxyCodeLine{00945\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}},}
+\DoxyCodeLine{00946\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (plot\_width\ +\ space),}
+\DoxyCodeLine{00947\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (plot\_height\ +\ space),}
+\DoxyCodeLine{00948\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_width,}
+\DoxyCodeLine{00949\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_height);}
+\DoxyCodeLine{00950\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a717d4c71d52243a7284f3e964b4b51b3}{write\_plot\_panel}}(script,}
+\DoxyCodeLine{00951\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}CGS2\ loss\ of\ orthogonality\ vs\ kappa"{}},}
+\DoxyCodeLine{00952\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}orthogonality\ error"{}},}
+\DoxyCodeLine{00953\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cgs2\_ortho,}
+\DoxyCodeLine{00954\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}},}
+\DoxyCodeLine{00955\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (2*plot\_width\ +\ 2*space),}
+\DoxyCodeLine{00956\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (plot\_height\ +\ space),}
+\DoxyCodeLine{00957\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_width,}
+\DoxyCodeLine{00958\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_height);}
+\DoxyCodeLine{00959\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a717d4c71d52243a7284f3e964b4b51b3}{write\_plot\_panel}}(script,}
+\DoxyCodeLine{00960\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}MGS2\ loss\ of\ orthogonality\ vs\ kappa"{}},}
+\DoxyCodeLine{00961\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}orthogonality\ error"{}},}
+\DoxyCodeLine{00962\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ mgs2\_ortho,}
+\DoxyCodeLine{00963\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}},}
+\DoxyCodeLine{00964\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (3*plot\_width\ +\ 3*space),}
+\DoxyCodeLine{00965\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (plot\_height\ +\ space),}
+\DoxyCodeLine{00966\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_width,}
+\DoxyCodeLine{00967\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_height);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00968\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a717d4c71d52243a7284f3e964b4b51b3}{write\_plot\_panel}}(script,}
+\DoxyCodeLine{00969\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}CGS\ representation\ error\ vs\ kappa"{}},}
+\DoxyCodeLine{00970\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}relative\ representation\ error"{}},}
+\DoxyCodeLine{00971\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cgs\_rep,}
+\DoxyCodeLine{00972\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}},}
+\DoxyCodeLine{00973\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.00,}
+\DoxyCodeLine{00974\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.00,}
+\DoxyCodeLine{00975\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_width,}
+\DoxyCodeLine{00976\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_height);}
+\DoxyCodeLine{00977\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a717d4c71d52243a7284f3e964b4b51b3}{write\_plot\_panel}}(script,}
+\DoxyCodeLine{00978\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}MGS\ representation\ error\ vs\ kappa"{}},}
+\DoxyCodeLine{00979\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}relative\ representation\ error"{}},}
+\DoxyCodeLine{00980\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ mgs\_rep,}
+\DoxyCodeLine{00981\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}},}
+\DoxyCodeLine{00982\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (plot\_width\ +\ space),}
+\DoxyCodeLine{00983\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.00,}
+\DoxyCodeLine{00984\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_width,}
+\DoxyCodeLine{00985\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_height);}
+\DoxyCodeLine{00986\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a717d4c71d52243a7284f3e964b4b51b3}{write\_plot\_panel}}(script,}
+\DoxyCodeLine{00987\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}CGS2\ representation\ error\ vs\ kappa"{}},}
+\DoxyCodeLine{00988\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}relative\ representation\ error"{}},}
+\DoxyCodeLine{00989\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cgs2\_rep,}
+\DoxyCodeLine{00990\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}},}
+\DoxyCodeLine{00991\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (2*plot\_width\ +\ 2*space),}
+\DoxyCodeLine{00992\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.00,}
+\DoxyCodeLine{00993\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_width,}
+\DoxyCodeLine{00994\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_height);}
+\DoxyCodeLine{00995\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a717d4c71d52243a7284f3e964b4b51b3}{write\_plot\_panel}}(script,}
+\DoxyCodeLine{00996\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}MGS2\ representation\ error\ vs\ kappa"{}},}
+\DoxyCodeLine{00997\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}relative\ representation\ error"{}},}
+\DoxyCodeLine{00998\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ mgs2\_rep,}
+\DoxyCodeLine{00999\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}},}
+\DoxyCodeLine{01000\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (3*plot\_width\ +\ 3*space),}
+\DoxyCodeLine{01001\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0.00,}
+\DoxyCodeLine{01002\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_width,}
+\DoxyCodeLine{01003\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ plot\_height);}
+\DoxyCodeLine{01004\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ multiplot\(\backslash\)n"{}};}
+\DoxyCodeLine{01005\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ output\(\backslash\)n"{}};}
+\DoxyCodeLine{01006\ \ \ \ \ script.close();}
+\DoxyCodeLine{01007\ }
+\DoxyCodeLine{01008\ \ \ \ \ \textcolor{keyword}{const}\ std::string\ command\ =\ \textcolor{stringliteral}{"{}gnuplot\ "{}}\ +\ script\_file.string();}
+\DoxyCodeLine{01009\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ exit\_code\ =\ std::system(command.c\_str());}
+\DoxyCodeLine{01010\ \ \ \ \ \textcolor{keywordflow}{if}\ (exit\_code\ ==\ 0)\ \{}
+\DoxyCodeLine{01011\ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}Wrote\ plot\ to\ "{}}\ <<\ plot\_file\ <<\ std::endl;}
+\DoxyCodeLine{01012\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{01013\ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}Wrote\ gnuplot\ script\ to\ "{}}\ <<\ script\_file\ <<\ std::endl;}
+\DoxyCodeLine{01014\ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}Run\ manually\ with:\ gnuplot\ "{}}\ <<\ script\_file\ <<\ std::endl;}
+\DoxyCodeLine{01015\ \ \ \ \ \}}
+\DoxyCodeLine{01016\ \}}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_ad7f31ac9b3bc26fd49d0cd88f50eec17}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!run\_precisions@{run\_precisions}}
+\index{run\_precisions@{run\_precisions}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{run\_precisions()}{run\_precisions()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_ad7f31ac9b3bc26fd49d0cd88f50eec17} 
+template$<$std::\+size\+\_\+t I1, std::\+size\+\_\+t I2$>$ \\
+void run\+\_\+precisions (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Run one combination of two precisions and save errors as result. 
+
+Instantiates and runs the mixed-\/precision classical and modified Gram-\/\+Schmidt algorithms in uniform precision \textquotesingle{}I1\textquotesingle{}. CGS2 and MGS2 are performed with \textquotesingle{}I1\textquotesingle{} in the first orthogonalisation and \textquotesingle{}I2\textquotesingle{} for re-\/orthogonalisation.
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em I1} & Index for {\ttfamily \doxylink{gram__schmidt__mixed_8cc_a34c63a3a70c5c1009f9a8816b3289a33}{Precision\+Tuple}} specifying the input matrix type. \\
+\hline
+{\em I2} & Index for {\ttfamily \doxylink{gram__schmidt__mixed_8cc_a34c63a3a70c5c1009f9a8816b3289a33}{Precision\+Tuple}} specifying the output matrix type. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em \doxylink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}} & Dimension of the test matrix. \\
+\hline
+{\em \doxylink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}} & Dimension of the test matrix. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00194\ \ \ \ \ \textcolor{keyword}{using\ }T1\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a63ac726b6527571e7b2f1ac7b7f58d75}{Precision<I1>}};}
+\DoxyCodeLine{00195\ \ \ \ \ \textcolor{keyword}{using\ }T2\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a63ac726b6527571e7b2f1ac7b7f58d75}{Precision<I2>}};}
+\DoxyCodeLine{00196\ }
+\DoxyCodeLine{00197\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ dirEntry\ :\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a0da30825b41d263746800fdac3233b7e}{recursive\_directory\_iterator}}(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8}{matrix\_dir}}))\ \{}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ std::string\ filename\ =\ dirEntry.path().filename().string();}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ find\ matrices\ matching\ the\ naming\ pattern}}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!(dirEntry.is\_regular\_file())\ ||\ !(dirEntry.path().extension()\ ==\ \textcolor{stringliteral}{"{}.mtx"{}})}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \ \ \ \ ||\ !(filename.find(\textcolor{stringliteral}{"{}matrix\_"{}})\ ==\ 0))\ \{}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ parse\ filename\ to\ extract\ kappa}}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ std::size\_t\ kappa\_pos\ =\ filename.find(\textcolor{stringliteral}{"{}kappa\_"{}});}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ std::size\_t\ kappa\_end\ =\ filename.find(\textcolor{stringliteral}{"{}\_seed"{}});}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (kappa\_pos\ ==\ std::string::npos\ ||\ kappa\_end\ ==\ std::string::npos\ ||\ kappa\_end\ <=\ kappa\_pos\ +\ 6)\ \{}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ std::string\ kappa\_str\ =\ filename.substr(kappa\_pos\ +\ 6,\ kappa\_end\ -\/\ (kappa\_pos\ +\ 6));}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}}\ =\ std::stod(kappa\_str);}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \textcolor{comment}{//parse\ filename\ for\ seed}}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ std::size\_t\ seed\_pos\ =\ filename.find(\textcolor{stringliteral}{"{}seed\_u\_v\_"{}});}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ std::size\_t\ seed\_end\ =\ filename.find(\textcolor{stringliteral}{"{}.mtx"{}});}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (seed\_pos\ ==\ std::string::npos\ ||\ seed\_end\ ==\ std::string::npos\ ||\ seed\_end\ <=\ seed\_pos\ +\ 9)\ \{}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ seed\_str\ has\ form\ "{}seed\_u\_v\_"{}\ +\ seed\_u\ +\ "{}\_"{}\ +\ seed\_v}}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ this\ is\ saved\ in\ plot\ filename}}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a0d7ac8de6102b9232af1f7682e00b3f3}{seed\_str}}\ =\ filename.substr(seed\_pos,\ seed\_end\ -\/\ (seed\_pos));}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ read\ matrix\ from\ file}}
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ DenseMatrix<T2>\ A(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}},\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}});}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ for\ each\ matrix\ run\_gram\_schmidt}}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{namespacehdnum_a1ad08a41d805d5d24e30cd5c4b1c6796}{readMatrixFromFileMatrixMarketHighPrec}}(A,\ dirEntry.path().string());}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ run\ test\ and\ save\ results}}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\ res\ =\ \doxymbox{\hyperlink{namespacehdnum_a22139d45934850ed9f8c69d1a6975b6e}{run\_gram\_schmidt\_mixed2<T1,\ T2>}}(A,\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aaf448113b3ba6c968d33481093aa3111}{prec\_label}}(std::make\_tuple(I1,I2)),\ kappa\_str);}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_afe0ed161afbbbdbfde02ac48352398b1}{results2}}[std::make\_tuple(I1,\ I2)][\doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}}]\ =\ res;}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00229\ \ \ \ \ \}}
+\DoxyCodeLine{00230\ }
+\DoxyCodeLine{00231\ \}}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_ac09dd5aa605a876ac3e2455a3bea2e7b}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!run\_precisions@{run\_precisions}}
+\index{run\_precisions@{run\_precisions}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{run\_precisions()}{run\_precisions()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_ac09dd5aa605a876ac3e2455a3bea2e7b} 
+template$<$std::\+size\+\_\+t I1, std::\+size\+\_\+t I2, std::\+size\+\_\+t I3, std::\+size\+\_\+t I4$>$ \\
+void run\+\_\+precisions (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Run one combination of four precisions and save errors as result. 
+
+Instantiates and runs the mixed-\/precision classical, modified and re-\/orthogonalised Gram-\/\+Schmidt algorithms on all matrices from Matrix\+Market files in the given directory that match the naming scheme. The indeces given as template parameters correspond to precisions in \doxylink{gram__schmidt__mixed_8cc_a34c63a3a70c5c1009f9a8816b3289a33}{Precision\+Tuple}.
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em I1} & Index for {\ttfamily \doxylink{gram__schmidt__mixed_8cc_a34c63a3a70c5c1009f9a8816b3289a33}{Precision\+Tuple}} specifying the matrix type. \\
+\hline
+{\em I2} & Index for {\ttfamily \doxylink{gram__schmidt__mixed_8cc_a34c63a3a70c5c1009f9a8816b3289a33}{Precision\+Tuple}} specifying the inner-\/product type. \\
+\hline
+{\em I3} & Index for {\ttfamily \doxylink{gram__schmidt__mixed_8cc_a34c63a3a70c5c1009f9a8816b3289a33}{Precision\+Tuple}} specifying the normalization type. \\
+\hline
+{\em I4} & Index for {\ttfamily \doxylink{gram__schmidt__mixed_8cc_a34c63a3a70c5c1009f9a8816b3289a33}{Precision\+Tuple}} specifying the accumulation type. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00138\ \ \ \ \ \textcolor{keyword}{using\ }T1\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a63ac726b6527571e7b2f1ac7b7f58d75}{Precision<I1>}};}
+\DoxyCodeLine{00139\ \ \ \ \ \textcolor{keyword}{using\ }T2\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a63ac726b6527571e7b2f1ac7b7f58d75}{Precision<I2>}};}
+\DoxyCodeLine{00140\ \ \ \ \ \textcolor{keyword}{using\ }T3\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a63ac726b6527571e7b2f1ac7b7f58d75}{Precision<I3>}};}
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keyword}{using\ }T4\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a63ac726b6527571e7b2f1ac7b7f58d75}{Precision<I4>}};}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ dirEntry\ :\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a0da30825b41d263746800fdac3233b7e}{recursive\_directory\_iterator}}(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8}{matrix\_dir}}))\ \{}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ std::string\ filename\ =\ dirEntry.path().filename().string();}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!(dirEntry.is\_regular\_file())\ ||\ !(dirEntry.path().extension()\ ==\ \textcolor{stringliteral}{"{}.mtx"{}})}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \ \ \ \ ||\ !(filename.find(\textcolor{stringliteral}{"{}matrix\_"{}})\ ==\ 0))\ \{}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ parse\ filename\ to\ extract\ kappa}}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ std::size\_t\ kappa\_pos\ =\ filename.find(\textcolor{stringliteral}{"{}kappa\_"{}});}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ std::size\_t\ kappa\_end\ =\ filename.find(\textcolor{stringliteral}{"{}\_seed"{}});}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (kappa\_pos\ ==\ std::string::npos\ ||\ kappa\_end\ ==\ std::string::npos\ ||\ kappa\_end\ <=\ kappa\_pos\ +\ 6)\ \{}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ std::string\ kappa\_str\ =\ filename.substr(kappa\_pos\ +\ 6,\ kappa\_end\ -\/\ (kappa\_pos\ +\ 6));}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}}\ =\ std::stod(kappa\_str);}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \textcolor{comment}{//parse\ filename\ for\ seed}}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ std::size\_t\ seed\_pos\ =\ filename.find(\textcolor{stringliteral}{"{}seed\_u\_v\_"{}});}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ std::size\_t\ seed\_end\ =\ filename.find(\textcolor{stringliteral}{"{}.mtx"{}});}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (seed\_pos\ ==\ std::string::npos\ ||\ seed\_end\ ==\ std::string::npos\ ||\ seed\_end\ <=\ seed\_pos\ +\ 9)\ \{}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ seed\_str\ has\ form\ "{}seed\_u\_v\_"{}\ +\ seed\_u\ +\ "{}\_"{}\ +\ seed\_v}}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ this\ is\ saved\ in\ plot\ filename}}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a0d7ac8de6102b9232af1f7682e00b3f3}{seed\_str}}\ =\ filename.substr(seed\_pos,\ seed\_end\ -\/\ (seed\_pos));}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ read\ matrix\ from\ file}}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ DenseMatrix<T1>\ A(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}},\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}});}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ for\ each\ matrix\ run\_gram\_schmidt}}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{namespacehdnum_a1ad08a41d805d5d24e30cd5c4b1c6796}{readMatrixFromFileMatrixMarketHighPrec}}(A,\ dirEntry.path().string());}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ run\ test\ and\ save\ results}}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\ res\ =\ \doxymbox{\hyperlink{namespacehdnum_ac10b4c5935878e279d8804aea24f6c33}{run\_gram\_schmidt\_mixed<T1,\ T2,\ T3,\ T4>}}(A,\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aaf448113b3ba6c968d33481093aa3111}{prec\_label}}(std::make\_tuple(I1,I2,I3,I4)),\ kappa\_str);}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a298930a640b46582a2c8f2a48c6b5398}{results}}[std::make\_tuple(I1,\ I2,\ I3,\ I4)][\doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}}]\ =\ res;}
+\DoxyCodeLine{00176\ \ \ \ \ \}}
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00178\ \}}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_a09e8147d95a1073932e81fae8b6e32d9}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!unit\_roundoff\_for\_precision@{unit\_roundoff\_for\_precision}}
+\index{unit\_roundoff\_for\_precision@{unit\_roundoff\_for\_precision}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{unit\_roundoff\_for\_precision()}{unit\_roundoff\_for\_precision()}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a09e8147d95a1073932e81fae8b6e32d9} 
+double unit\+\_\+roundoff\+\_\+for\+\_\+precision (\begin{DoxyParamCaption}\item[{std::\+size\+\_\+t}]{precision\+\_\+index}{}\end{DoxyParamCaption})}
+
+
+
+Return the unit roundoff corresponding to one precision index. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em precision\+\_\+index} & Index for \doxylink{gram__schmidt__mixed_8cc_a34c63a3a70c5c1009f9a8816b3289a33}{Precision\+Tuple}. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Unit roundoff as a double. 
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00261\ \ \ \ \ \textcolor{keywordflow}{switch}\ (precision\_index)\ \{}
+\DoxyCodeLine{00262\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:\ \textcolor{keywordflow}{return}\ std::ldexp(1.0,\ -\/4);\ \ \ \textcolor{comment}{//\ FP8}}
+\DoxyCodeLine{00263\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:\ \textcolor{keywordflow}{return}\ std::ldexp(1.0,\ -\/8);\ \ \ \textcolor{comment}{//\ bfloat16}}
+\DoxyCodeLine{00264\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 2:\ \textcolor{keywordflow}{return}\ std::ldexp(1.0,\ -\/11);\ \ \textcolor{comment}{//\ FP16}}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 3:\ \textcolor{keywordflow}{return}\ std::ldexp(1.0,\ -\/24);\ \ \textcolor{comment}{//\ FP32}}
+\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 4:\ \textcolor{keywordflow}{return}\ std::ldexp(1.0,\ -\/53);\ \ \textcolor{comment}{//\ FP64}}
+\DoxyCodeLine{00267\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 5:\ \textcolor{keywordflow}{return}\ std::ldexp(1.0,\ -\/64);\ \ \textcolor{comment}{//\ FP128}}
+\DoxyCodeLine{00268\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 6:\ \textcolor{keywordflow}{return}\ std::ldexp(1.0,\ -\/192);\ \textcolor{comment}{//\ FP256}}
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 7:\ \textcolor{keywordflow}{return}\ std::ldexp(1.0,\ -\/448);\ \textcolor{comment}{//\ FP512}}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 8:\ \textcolor{keywordflow}{return}\ std::ldexp(1.0,\ -\/960);\ \textcolor{comment}{//\ FP1024}}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{default}:\ \textcolor{keywordflow}{return}\ std::ldexp(1.0,\ -\/53);}
+\DoxyCodeLine{00272\ \ \ \ \ \}}
+\DoxyCodeLine{00273\ \}}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_ab74494055de04f91ccae9691954ca978}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!write\_combined\_legend\_panel@{write\_combined\_legend\_panel}}
+\index{write\_combined\_legend\_panel@{write\_combined\_legend\_panel}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{write\_combined\_legend\_panel()}{write\_combined\_legend\_panel()}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_ab74494055de04f91ccae9691954ca978} 
+void write\+\_\+combined\+\_\+legend\+\_\+panel (\begin{DoxyParamCaption}\item[{std::\+ofstream \&}]{script}{, }\item[{const std::\+vector$<$ \doxymbox{\hyperlink{structPlotSeries}{Plot\+Series}} $>$ \&}]{algorithm\+\_\+series}{, }\item[{const std::\+vector$<$ std::\+size\+\_\+t $>$ \&}]{roundoff\+\_\+indices}{, }\item[{double}]{origin\+\_\+x}{, }\item[{double}]{origin\+\_\+y}{, }\item[{double}]{width}{, }\item[{double}]{height}{}\end{DoxyParamCaption})}
+
+
+
+Add a combined legend panel for precision combination labels and roundoff references. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em script} & Output stream for the generated GNUplot script. \\
+\hline
+{\em algorithm\+\_\+series} & Algorithm series to include. \\
+\hline
+{\em \doxylink{gram__schmidt__mixed_8cc_ad508532175c1371713583af16aee036c}{roundoff\+\_\+indices}} & \doxylink{gram__schmidt__mixed_8cc_a63ac726b6527571e7b2f1ac7b7f58d75}{Precision} indices to include in the roundoff legend. \\
+\hline
+{\em origin\+\_\+x} & Horizontal origin of the legend panel. \\
+\hline
+{\em origin\+\_\+y} & Vertical origin of the legend panel. \\
+\hline
+{\em width} & Panel width in normalized plot coordinates. \\
+\hline
+{\em height} & Panel height in normalized plot coordinates. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00609\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00610\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ origin\ "{}}\ <<\ origin\_x\ <<\ \textcolor{stringliteral}{"{},"{}}\ <<\ origin\_y\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00611\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ size\ "{}}\ <<\ width\ <<\ \textcolor{stringliteral}{"{},"{}}\ <<\ height\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00612\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ border\(\backslash\)n"{}};}
+\DoxyCodeLine{00613\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ tics\(\backslash\)n"{}};}
+\DoxyCodeLine{00614\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ title\(\backslash\)n"{}};}
+\DoxyCodeLine{00615\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ xlabel\(\backslash\)n"{}};}
+\DoxyCodeLine{00616\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ ylabel\(\backslash\)n"{}};}
+\DoxyCodeLine{00617\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ logscale\ x\(\backslash\)n"{}};}
+\DoxyCodeLine{00618\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ logscale\ y\(\backslash\)n"{}};}
+\DoxyCodeLine{00619\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ xrange\ [0:1]\(\backslash\)n"{}};}
+\DoxyCodeLine{00620\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ yrange\ [0:1]\(\backslash\)n"{}};}
+\DoxyCodeLine{00621\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ key\ horizontal\ center\ top\ box\ opaque\(\backslash\)n"{}};}
+\DoxyCodeLine{00622\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ key\ samplen\ 1.2\(\backslash\)n"{}};}
+\DoxyCodeLine{00623\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ key\ spacing\ 1.1\(\backslash\)n"{}};}
+\DoxyCodeLine{00624\ }
+\DoxyCodeLine{00625\ \ \ \ \ \textcolor{keywordflow}{if}\ (algorithm\_series.empty()\ \&\&\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ad508532175c1371713583af16aee036c}{roundoff\_indices}}.empty())\ \{}
+\DoxyCodeLine{00626\ \ \ \ \ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}plot\ NaN\ notitle\(\backslash\)n"{}};}
+\DoxyCodeLine{00627\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00628\ \ \ \ \ \}}
+\DoxyCodeLine{00629\ }
+\DoxyCodeLine{00630\ \ \ \ \ \textcolor{keyword}{const}\ std::size\_t\ total\_items\ =\ algorithm\_series.size()\ +\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ad508532175c1371713583af16aee036c}{roundoff\_indices}}.size();}
+\DoxyCodeLine{00631\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_acb6fbb58e37e5c52a40ccad8653f4409}{write\_multiline\_plot}}(script,\ total\_items,\ [\&](std::size\_t\ i)\ \{}
+\DoxyCodeLine{00632\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (i\ <\ algorithm\_series.size())\ \{}
+\DoxyCodeLine{00633\ \ \ \ \ \ \ \ \ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}2\ with\ linespoints\ lw\ 2\ lt\ "{}}\ <<\ (i\ +\ 1)}
+\DoxyCodeLine{00634\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ title\ '"{}}\ <<\ algorithm\_series[i].title\ <<\ \textcolor{stringliteral}{"{}'"{}};}
+\DoxyCodeLine{00635\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00636\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::size\_t\ roundoff\_offset\ =\ i\ -\/\ algorithm\_series.size();}
+\DoxyCodeLine{00637\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::size\_t\ precision\_index\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ad508532175c1371713583af16aee036c}{roundoff\_indices}}[roundoff\_offset];}
+\DoxyCodeLine{00638\ \ \ \ \ \ \ \ \ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}2\ with\ lines\ lw\ 2\ lt\ "{}}\ <<\ (roundoff\_offset\ +\ 1)}
+\DoxyCodeLine{00639\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ dt\ 2\ title\ '"{}}\ <<\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ab9f644b4fd81edcd01d35f1c8d464535}{precision\_names}}[precision\_index]}
+\DoxyCodeLine{00640\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ unit\ roundoff'"{}};}
+\DoxyCodeLine{00641\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00642\ \ \ \ \ \});}
+\DoxyCodeLine{00643\ \}}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_a150f7beddb9736106b384e66df05e7fb}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!write\_legend\_panel@{write\_legend\_panel}}
+\index{write\_legend\_panel@{write\_legend\_panel}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{write\_legend\_panel()}{write\_legend\_panel()}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a150f7beddb9736106b384e66df05e7fb} 
+void write\+\_\+legend\+\_\+panel (\begin{DoxyParamCaption}\item[{std::\+ofstream \&}]{script}{, }\item[{const std::\+vector$<$ \doxymbox{\hyperlink{structPlotSeries}{Plot\+Series}} $>$ \&}]{series}{, }\item[{double}]{origin\+\_\+x}{, }\item[{double}]{origin\+\_\+y}{, }\item[{double}]{width}{, }\item[{double}]{height}{}\end{DoxyParamCaption})}
+
+
+
+Add a legend panel to the generated GNUplot script. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em script} & Output stream for the generated GNUplot script. \\
+\hline
+{\em series} & Plot series for which the legend is generated. \\
+\hline
+{\em origin\+\_\+x} & Horizontal origin of the legend panel. \\
+\hline
+{\em origin\+\_\+y} & Vertical origin of the legend panel. \\
+\hline
+{\em width} & Panel width in normalized plot coordinates. \\
+\hline
+{\em height} & Panel height in normalized plot coordinates. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00523\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00524\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ origin\ "{}}\ <<\ origin\_x\ <<\ \textcolor{stringliteral}{"{},"{}}\ <<\ origin\_y\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00525\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ size\ "{}}\ <<\ width\ <<\ \textcolor{stringliteral}{"{},"{}}\ <<\ height\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00526\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ border\(\backslash\)n"{}};}
+\DoxyCodeLine{00527\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ tics\(\backslash\)n"{}};}
+\DoxyCodeLine{00528\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ title\(\backslash\)n"{}};}
+\DoxyCodeLine{00529\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ xlabel\(\backslash\)n"{}};}
+\DoxyCodeLine{00530\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ ylabel\(\backslash\)n"{}};}
+\DoxyCodeLine{00531\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ logscale\ x\(\backslash\)n"{}};}
+\DoxyCodeLine{00532\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ logscale\ y\(\backslash\)n"{}};}
+\DoxyCodeLine{00533\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ xrange\ [0:1]\(\backslash\)n"{}};}
+\DoxyCodeLine{00534\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ yrange\ [0:1]\(\backslash\)n"{}};}
+\DoxyCodeLine{00535\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ key\ horizontal\ center\ top\ box\ opaque\(\backslash\)n"{}};}
+\DoxyCodeLine{00536\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ key\ samplen\ 1.2\(\backslash\)n"{}};}
+\DoxyCodeLine{00537\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ key\ spacing\ 1.1\(\backslash\)n"{}};}
+\DoxyCodeLine{00538\ }
+\DoxyCodeLine{00539\ \ \ \ \ \textcolor{keywordflow}{if}\ (series.empty())\ \{}
+\DoxyCodeLine{00540\ \ \ \ \ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}plot\ NaN\ notitle\(\backslash\)n"{}};}
+\DoxyCodeLine{00541\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00542\ \ \ \ \ \}}
+\DoxyCodeLine{00543\ }
+\DoxyCodeLine{00544\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_acb6fbb58e37e5c52a40ccad8653f4409}{write\_multiline\_plot}}(script,\ series.size(),\ [\&](std::size\_t\ i)\ \{}
+\DoxyCodeLine{00545\ \ \ \ \ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}2\ with\ linespoints\ lw\ 2\ lt\ "{}}\ <<\ (i\ +\ 1)}
+\DoxyCodeLine{00546\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ title\ '"{}}\ <<\ series[i].title\ <<\ \textcolor{stringliteral}{"{}'"{}};}
+\DoxyCodeLine{00547\ \ \ \ \ \});}
+\DoxyCodeLine{00548\ \}}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_a7ed8162f9ffe5f19f2a59313c43f2f6c}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!write\_metric\_data@{write\_metric\_data}}
+\index{write\_metric\_data@{write\_metric\_data}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{write\_metric\_data()}{write\_metric\_data()}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a7ed8162f9ffe5f19f2a59313c43f2f6c} 
+template$<$typename Value\+Getter$>$ \\
+std::\+vector$<$ \doxymbox{\hyperlink{structPlotSeries}{Plot\+Series}} $>$ write\+\_\+metric\+\_\+data (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a84e04eb8d0babf744caf6b567dc4471e}{Result\+Map}} \&}]{all\+\_\+results}{, }\item[{Value\+Getter}]{getter}{, }\item[{const std::\+string \&}]{metric\+\_\+slug}{, }\item[{const std::\+filesystem::\+path \&}]{data\+\_\+dir}{}\end{DoxyParamCaption})}
+
+
+
+Write one metric to disk for each precision combination. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Value\+Getter} & Callable returning the metric value from a \doxylink{structhdnum_1_1Result}{Result} object. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em all\+\_\+results} & Collected experiment results indexed by precision combination and condition number. \\
+\hline
+{\em getter} & Callable extracting the requested metric from a \doxylink{structhdnum_1_1Result}{Result}. \\
+\hline
+{\em metric\+\_\+slug} & Base name for the generated data file. \\
+\hline
+{\em \doxylink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\+\_\+dir}} & Directory where the metric files are written. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Vector of plot-\/series descriptors for the generated files. 
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00344\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00345\ \ \ \ \ std::vector<PlotSeries>\ series;}
+\DoxyCodeLine{00346\ }
+\DoxyCodeLine{00347\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ result\_it\ :\ all\_results)\ \{}
+\DoxyCodeLine{00348\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\ result\_it.second.empty())\ \{}
+\DoxyCodeLine{00349\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00350\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00351\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ label\ =\ result\_it.first;}
+\DoxyCodeLine{00352\ }
+\DoxyCodeLine{00353\ \ \ \ \ \ \ \ \ std::filesystem::path\ data\_file\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}}\ /\ (metric\_slug\ +\ \textcolor{stringliteral}{"{}\_"{}}\ +\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a42690c9cac1d9cdf97ca65862bf08670}{label\_slug}}(label)\ +\ \textcolor{stringliteral}{"{}.dat"{}});}
+\DoxyCodeLine{00354\ \ \ \ \ \ \ \ \ std::ofstream\ out(data\_file);}
+\DoxyCodeLine{00355\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!out)\ \{}
+\DoxyCodeLine{00356\ \ \ \ \ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}Failed\ to\ open\ plot\ data\ file:\ "{}}\ <<\ data\_file\ <<\ std::endl;}
+\DoxyCodeLine{00357\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00358\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00359\ }
+\DoxyCodeLine{00360\ \ \ \ \ \ \ \ \ out\ <<\ std::scientific\ <<\ std::setprecision(300);}
+\DoxyCodeLine{00361\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ [\doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}},\ res]\ :\ result\_it.second)\ \{}
+\DoxyCodeLine{00362\ \ \ \ \ \ \ \ \ \ \ \ \ out\ <<\ \doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}}\ <<\ \textcolor{charliteral}{'\ '}\ <<\ getter(res)\ <<\ \textcolor{charliteral}{'\(\backslash\)n'};}
+\DoxyCodeLine{00363\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00364\ }
+\DoxyCodeLine{00365\ \ \ \ \ \ \ \ \ series.push\_back(\{\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aaf448113b3ba6c968d33481093aa3111}{prec\_label}}(label),\ data\_file,\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ad508532175c1371713583af16aee036c}{roundoff\_indices}}\});}
+\DoxyCodeLine{00366\ \ \ \ \ \}}
+\DoxyCodeLine{00367\ }
+\DoxyCodeLine{00368\ \ \ \ \ \textcolor{keywordflow}{return}\ series;}
+\DoxyCodeLine{00369\ \}}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_a01e623b3967fa5a9d743ba7ce3a32e60}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!write\_metric\_data1@{write\_metric\_data1}}
+\index{write\_metric\_data1@{write\_metric\_data1}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{write\_metric\_data1()}{write\_metric\_data1()}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a01e623b3967fa5a9d743ba7ce3a32e60} 
+template$<$typename Value\+Getter$>$ \\
+std::\+vector$<$ \doxymbox{\hyperlink{structPlotSeries}{Plot\+Series}} $>$ write\+\_\+metric\+\_\+data1 (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aee752b13f80bc2082942d8127f803579}{Result\+Map2}} \&}]{all\+\_\+results}{, }\item[{Value\+Getter}]{getter}{, }\item[{const std::\+string \&}]{metric\+\_\+slug}{, }\item[{const std::\+filesystem::\+path \&}]{data\+\_\+dir}{}\end{DoxyParamCaption})}
+
+
+
+Write one metric to disk for each precision. 
+
+This helper is only used in \doxylink{gram__schmidt__mixed_8cc_a8badeab22d42fd0e94a3c95015ee403d}{print\+\_\+results2()} to write the data for CGS and MGS. Since CGS and MGS only use the second precision, only that is used for the legend precision labels. Also if for example FP32/\+\+FP64 and FP64/\+64 are compared we only plot CGS/\+\+MGS in FP64 once. 
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Value\+Getter} & Callable returning the metric value from a \doxylink{structhdnum_1_1Result}{Result} object. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em all\+\_\+results} & Collected experiment results indexed by precision combination and condition number. \\
+\hline
+{\em getter} & Callable extracting the requested metric from a \doxylink{structhdnum_1_1Result}{Result}. \\
+\hline
+{\em metric\+\_\+slug} & Base name for the generated data file. \\
+\hline
+{\em \doxylink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\+\_\+dir}} & Directory where the metric files are written. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Vector of plot-\/series descriptors for the generated files. 
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00387\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00388\ \ \ \ \ std::vector<PlotSeries>\ series;}
+\DoxyCodeLine{00389\ \ \ \ \ \textcolor{keywordtype}{bool}\ precisions[9]\ =\ \{0,0,0,0,0,0,0,0,0\};}
+\DoxyCodeLine{00390\ }
+\DoxyCodeLine{00391\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ result\_it\ :\ all\_results)\ \{}
+\DoxyCodeLine{00392\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\ result\_it.second.empty())\ \{}
+\DoxyCodeLine{00393\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00394\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00395\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ skip\ precisions\ we\ already\ have\ in\ the\ plot}}
+\DoxyCodeLine{00396\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ (this\ only\ happens\ for\ CGS/MGS\ during\ the\ two\ precision\ run\ in\ some\ cases\ like:\ FP32/FP64\ vs\ FP64/FP64)}}
+\DoxyCodeLine{00397\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (precisions[std::get<1>(result\_it.first)]\ ==\ \textcolor{keyword}{true})\ \{}
+\DoxyCodeLine{00398\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00399\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00400\ \ \ \ \ \ \ \ \ \ \ \ \ precisions[std::get<1>(result\_it.first)]\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00401\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00402\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ label\ =\ result\_it.first;}
+\DoxyCodeLine{00403\ }
+\DoxyCodeLine{00404\ \ \ \ \ \ \ \ \ std::filesystem::path\ data\_file\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}}\ /\ (metric\_slug\ +\ \textcolor{stringliteral}{"{}\_"{}}\ +\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a42690c9cac1d9cdf97ca65862bf08670}{label\_slug}}(label)\ +\ \textcolor{stringliteral}{"{}.dat"{}});}
+\DoxyCodeLine{00405\ \ \ \ \ \ \ \ \ std::ofstream\ out(data\_file);}
+\DoxyCodeLine{00406\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!out)\ \{}
+\DoxyCodeLine{00407\ \ \ \ \ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}Failed\ to\ open\ plot\ data\ file:\ "{}}\ <<\ data\_file\ <<\ std::endl;}
+\DoxyCodeLine{00408\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00409\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00410\ }
+\DoxyCodeLine{00411\ \ \ \ \ \ \ \ \ out\ <<\ std::scientific\ <<\ std::setprecision(300);}
+\DoxyCodeLine{00412\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ [\doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}},\ res]\ :\ result\_it.second)\ \{}
+\DoxyCodeLine{00413\ \ \ \ \ \ \ \ \ \ \ \ \ out\ <<\ \doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}}\ <<\ \textcolor{charliteral}{'\ '}\ <<\ getter(res)\ <<\ \textcolor{charliteral}{'\(\backslash\)n'};}
+\DoxyCodeLine{00414\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00415\ }
+\DoxyCodeLine{00416\ \ \ \ \ \ \ \ \ series.push\_back(\{\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aeb719ced00a61b0b028d4b3b5f90fc08}{prec\_label1}}(label),\ data\_file,\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ad508532175c1371713583af16aee036c}{roundoff\_indices}}\});}
+\DoxyCodeLine{00417\ \ \ \ \ \}}
+\DoxyCodeLine{00418\ }
+\DoxyCodeLine{00419\ \ \ \ \ \textcolor{keywordflow}{return}\ series;}
+\DoxyCodeLine{00420\ \}}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_ab2a7d626a0b3d80fd847a21b282771b7}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!write\_metric\_data2@{write\_metric\_data2}}
+\index{write\_metric\_data2@{write\_metric\_data2}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{write\_metric\_data2()}{write\_metric\_data2()}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_ab2a7d626a0b3d80fd847a21b282771b7} 
+template$<$typename Value\+Getter$>$ \\
+std::\+vector$<$ \doxymbox{\hyperlink{structPlotSeries}{Plot\+Series}} $>$ write\+\_\+metric\+\_\+data2 (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aee752b13f80bc2082942d8127f803579}{Result\+Map2}} \&}]{all\+\_\+results}{, }\item[{Value\+Getter}]{getter}{, }\item[{const std::\+string \&}]{metric\+\_\+slug}{, }\item[{const std::\+filesystem::\+path \&}]{data\+\_\+dir}{}\end{DoxyParamCaption})}
+
+
+
+Write one metric to disk for each precision combination (uesd for two precision CGS2/\+\+MGS2). 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Value\+Getter} & Callable returning the metric value from a \doxylink{structhdnum_1_1Result}{Result} object. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em all\+\_\+results} & Collected experiment results indexed by precision combination and condition number. \\
+\hline
+{\em getter} & Callable extracting the requested metric from a \doxylink{structhdnum_1_1Result}{Result}. \\
+\hline
+{\em metric\+\_\+slug} & Base name for the generated data file. \\
+\hline
+{\em \doxylink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\+\_\+dir}} & Directory where the metric files are written. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Vector of plot-\/series descriptors for the generated files. 
+\end{DoxyReturn}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00435\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00436\ \ \ \ \ std::vector<PlotSeries>\ series;}
+\DoxyCodeLine{00437\ }
+\DoxyCodeLine{00438\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ result\_it\ :\ all\_results)\ \{}
+\DoxyCodeLine{00439\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (result\_it.second.empty())\ \{}
+\DoxyCodeLine{00440\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00441\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00442\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ label\ =\ result\_it.first;}
+\DoxyCodeLine{00443\ }
+\DoxyCodeLine{00444\ \ \ \ \ \ \ \ \ std::filesystem::path\ data\_file\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}}\ /\ (metric\_slug\ +\ \textcolor{stringliteral}{"{}\_"{}}\ +\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a42690c9cac1d9cdf97ca65862bf08670}{label\_slug}}(label)\ +\ \textcolor{stringliteral}{"{}.dat"{}});}
+\DoxyCodeLine{00445\ \ \ \ \ \ \ \ \ std::ofstream\ out(data\_file);}
+\DoxyCodeLine{00446\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!out)\ \{}
+\DoxyCodeLine{00447\ \ \ \ \ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}Failed\ to\ open\ plot\ data\ file:\ "{}}\ <<\ data\_file\ <<\ std::endl;}
+\DoxyCodeLine{00448\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00449\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00450\ }
+\DoxyCodeLine{00451\ \ \ \ \ \ \ \ \ out\ <<\ std::scientific\ <<\ std::setprecision(300);}
+\DoxyCodeLine{00452\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ [\doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}},\ res]\ :\ result\_it.second)\ \{}
+\DoxyCodeLine{00453\ \ \ \ \ \ \ \ \ \ \ \ \ out\ <<\ \doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}}\ <<\ \textcolor{charliteral}{'\ '}\ <<\ getter(res)\ <<\ \textcolor{charliteral}{'\(\backslash\)n'};}
+\DoxyCodeLine{00454\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00455\ }
+\DoxyCodeLine{00456\ \ \ \ \ \ \ \ \ series.push\_back(\{\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aaf448113b3ba6c968d33481093aa3111}{prec\_label}}(label),\ data\_file,\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ad508532175c1371713583af16aee036c}{roundoff\_indices}}\});}
+\DoxyCodeLine{00457\ \ \ \ \ \}}
+\DoxyCodeLine{00458\ }
+\DoxyCodeLine{00459\ \ \ \ \ \textcolor{keywordflow}{return}\ series;}
+\DoxyCodeLine{00460\ \}}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_acb6fbb58e37e5c52a40ccad8653f4409}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!write\_multiline\_plot@{write\_multiline\_plot}}
+\index{write\_multiline\_plot@{write\_multiline\_plot}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{write\_multiline\_plot()}{write\_multiline\_plot()}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_acb6fbb58e37e5c52a40ccad8653f4409} 
+template$<$typename Writer$>$ \\
+void write\+\_\+multiline\+\_\+plot (\begin{DoxyParamCaption}\item[{std::\+ofstream \&}]{script}{, }\item[{std::\+size\+\_\+t}]{item\+\_\+count}{, }\item[{Writer}]{write\+\_\+item}{}\end{DoxyParamCaption})}
+
+
+
+Write a GNUplot plot command across multiple lines. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Writer} & Callable that emits one plot item for the given index. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em script} & Output stream for the generated GNUplot script. \\
+\hline
+{\em item\+\_\+count} & Number of plot items to emit. \\
+\hline
+{\em write\+\_\+item} & Callable that writes one complete plot item. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00318\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00319\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}plot\ \(\backslash\)\(\backslash\)\(\backslash\)n"{}};}
+\DoxyCodeLine{00320\ \ \ \ \ \textcolor{keywordflow}{for}\ (std::size\_t\ i\ =\ 0;\ i\ <\ item\_count;\ ++i)\ \{}
+\DoxyCodeLine{00321\ \ \ \ \ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}\ \ \ \ "{}};}
+\DoxyCodeLine{00322\ \ \ \ \ \ \ \ \ write\_item(i);}
+\DoxyCodeLine{00323\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (i\ +\ 1\ <\ item\_count)\ \{}
+\DoxyCodeLine{00324\ \ \ \ \ \ \ \ \ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{},\ \(\backslash\)\(\backslash\)\(\backslash\)n"{}};}
+\DoxyCodeLine{00325\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00326\ \ \ \ \ \ \ \ \ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00327\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00328\ \ \ \ \ \}}
+\DoxyCodeLine{00329\ \}}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_a717d4c71d52243a7284f3e964b4b51b3}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!write\_plot\_panel@{write\_plot\_panel}}
+\index{write\_plot\_panel@{write\_plot\_panel}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{write\_plot\_panel()}{write\_plot\_panel()}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a717d4c71d52243a7284f3e964b4b51b3} 
+void write\+\_\+plot\+\_\+panel (\begin{DoxyParamCaption}\item[{std::\+ofstream \&}]{script}{, }\item[{const std::\+string \&}]{title}{, }\item[{const std::\+string \&}]{y\+\_\+label}{, }\item[{const std::\+vector$<$ \doxymbox{\hyperlink{structPlotSeries}{Plot\+Series}} $>$ \&}]{series}{, }\item[{const std::\+filesystem::\+path \&}]{data\+\_\+dir}{, }\item[{double}]{origin\+\_\+x}{, }\item[{double}]{origin\+\_\+y}{, }\item[{double}]{width}{, }\item[{double}]{height}{}\end{DoxyParamCaption})}
+
+
+
+Add one GNUplot panel for a metric plot to the plot script. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em script} & Output stream for the generated GNUplot script. \\
+\hline
+{\em title} & Panel title shown in the figure. \\
+\hline
+{\em y\+\_\+label} & Label for the y-\/axis. \\
+\hline
+{\em series} & Plot series to include in the panel. \\
+\hline
+{\em \doxylink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\+\_\+dir}} & Directory holding the metric data files. \\
+\hline
+{\em origin\+\_\+x} & Horizontal origin of the panel. \\
+\hline
+{\em origin\+\_\+y} & Vertical origin of the panel. \\
+\hline
+{\em width} & Panel width in normalized plot coordinates. \\
+\hline
+{\em height} & Panel height in normalized plot coordinates. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00482\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00483\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ origin\ "{}}\ <<\ origin\_x\ <<\ \textcolor{stringliteral}{"{},"{}}\ <<\ origin\_y\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00484\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ size\ "{}}\ <<\ width\ <<\ \textcolor{stringliteral}{"{},"{}}\ <<\ height\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00485\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ title\ '"{}}\ <<\ title\ <<\ \textcolor{stringliteral}{"{}'\(\backslash\)n"{}};}
+\DoxyCodeLine{00486\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ xlabel\ 'kappa'\(\backslash\)n"{}};}
+\DoxyCodeLine{00487\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ ylabel\ '"{}}\ <<\ y\_label\ <<\ \textcolor{stringliteral}{"{}'\(\backslash\)n"{}};}
+\DoxyCodeLine{00488\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ logscale\ x\(\backslash\)n"{}};}
+\DoxyCodeLine{00489\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ logscale\ y\(\backslash\)n"{}};}
+\DoxyCodeLine{00490\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ grid\(\backslash\)n"{}};}
+\DoxyCodeLine{00491\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ border\(\backslash\)n"{}};}
+\DoxyCodeLine{00492\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ tics\(\backslash\)n"{}};}
+\DoxyCodeLine{00493\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ key\(\backslash\)n"{}};}
+\DoxyCodeLine{00494\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ xrange\(\backslash\)n"{}};}
+\DoxyCodeLine{00495\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ yrange\(\backslash\)n"{}};}
+\DoxyCodeLine{00496\ }
+\DoxyCodeLine{00497\ \ \ \ \ \textcolor{keywordflow}{if}\ (series.empty())\ \{}
+\DoxyCodeLine{00498\ \ \ \ \ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}plot\ NaN\ notitle\(\backslash\)n"{}};}
+\DoxyCodeLine{00499\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00500\ \ \ \ \ \}}
+\DoxyCodeLine{00501\ }
+\DoxyCodeLine{00502\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_acb6fbb58e37e5c52a40ccad8653f4409}{write\_multiline\_plot}}(script,\ series.size(),\ [\&](std::size\_t\ i)\ \{}
+\DoxyCodeLine{00503\ \ \ \ \ \ \ \ \ write\_precision\_series(script,\ series[i],\ data\_dir,\ i\ +\ 1);}
+\DoxyCodeLine{00504\ \ \ \ \ \});}
+\DoxyCodeLine{00505\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ logscale\ x\(\backslash\)n"{}};}
+\DoxyCodeLine{00506\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ logscale\ y\(\backslash\)n"{}};}
+\DoxyCodeLine{00507\ \}}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_a55445a4b89b5bbf64e83766238053928}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!write\_precision\_series@{write\_precision\_series}}
+\index{write\_precision\_series@{write\_precision\_series}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{write\_precision\_series()}{write\_precision\_series()}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a55445a4b89b5bbf64e83766238053928} 
+void write\+\_\+precision\+\_\+series (\begin{DoxyParamCaption}\item[{std::\+ofstream \&}]{script}{, }\item[{const \doxymbox{\hyperlink{structPlotSeries}{Plot\+Series}} \&}]{series}{, }\item[{const std::\+filesystem::\+path \&}]{data\+\_\+dir}{, }\item[{std::\+size\+\_\+t}]{style\+\_\+index}{}\end{DoxyParamCaption})}
+
+
+
+Emit one plotted precision series as a solid linespoints trace plus dashed unit-\/roundoff overlays. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em script} & Output stream for the generated GNUplot script. \\
+\hline
+{\em series} & Series descriptor. \\
+\hline
+{\em \doxylink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\+\_\+dir}} & Directory holding the metric data files. \\
+\hline
+{\em style\+\_\+index} & Stable 1-\/based line type used for the baseline series. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00295\ \ \ \ \ \textcolor{keyword}{const}\ std::string\ data\_file\ =\ \textcolor{charliteral}{'"{}'}\ +\ (\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}{data\_dir}}\ /\ series.\doxymbox{\hyperlink{structPlotSeries_a7a92decde18b6df82e90d376b6a1ecea}{data\_file}}.filename()).string()\ +\ \textcolor{charliteral}{'"{}'};}
+\DoxyCodeLine{00296\ \ \ \ \ script\ <<\ data\_file}
+\DoxyCodeLine{00297\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ using\ 1:2\ with\ linespoints\ lw\ 2\ lt\ "{}}\ <<\ style\_index}
+\DoxyCodeLine{00298\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ title\ '"{}}\ <<\ series.\doxymbox{\hyperlink{structPlotSeries_a3b914f2022e0e5d17aaa662946168303}{title}}\ <<\ \textcolor{stringliteral}{"{}'"{}};}
+\DoxyCodeLine{00299\ }
+\DoxyCodeLine{00300\ \ \ \ \ \textcolor{keywordflow}{for}\ (std::size\_t\ i\ =\ 0;\ i\ <\ series.\doxymbox{\hyperlink{structPlotSeries_a5f09fc2d3de94ba1f5daae5dd56d861b}{roundoff\_indices}}.size();\ i++)\ \{}
+\DoxyCodeLine{00301\ \ \ \ \ \ \ \ \ std::size\_t\ precision\_index\ =\ series.\doxymbox{\hyperlink{structPlotSeries_a5f09fc2d3de94ba1f5daae5dd56d861b}{roundoff\_indices}}[i];}
+\DoxyCodeLine{00302\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\ roundoff\ =\ (std::ostringstream()\ <<\ std::scientific\ <<\ std::setprecision(17)}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a09e8147d95a1073932e81fae8b6e32d9}{unit\_roundoff\_for\_precision}}(precision\_index)).str();}
+\DoxyCodeLine{00304\ \ \ \ \ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{},\ "{}}\ <<\ data\_file}
+\DoxyCodeLine{00305\ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ using\ 1:("{}}\ <<\ roundoff\ <<\ \textcolor{stringliteral}{"{})\ with\ lines\ lw\ 2\ lt\ "{}}\ <<\ (i+1)}
+\DoxyCodeLine{00306\ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ dt\ 2\ notitle"{}};}
+\DoxyCodeLine{00307\ \ \ \ \ \}}
+\DoxyCodeLine{00308\ \}}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_aa7cc7ecd93d1acc602ead6bc5641cd81}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!write\_roundoff\_legend\_panel@{write\_roundoff\_legend\_panel}}
+\index{write\_roundoff\_legend\_panel@{write\_roundoff\_legend\_panel}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{write\_roundoff\_legend\_panel()}{write\_roundoff\_legend\_panel()}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_aa7cc7ecd93d1acc602ead6bc5641cd81} 
+void write\+\_\+roundoff\+\_\+legend\+\_\+panel (\begin{DoxyParamCaption}\item[{std::\+ofstream \&}]{script}{, }\item[{const std::\+vector$<$ std::\+size\+\_\+t $>$ \&}]{roundoff\+\_\+indices}{, }\item[{double}]{origin\+\_\+x}{, }\item[{double}]{origin\+\_\+y}{, }\item[{double}]{width}{, }\item[{double}]{height}{}\end{DoxyParamCaption})}
+
+
+
+Add a legend panel explaining the dashed unit-\/roundoff references. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em script} & Output stream for the generated GNUplot script. \\
+\hline
+{\em \doxylink{gram__schmidt__mixed_8cc_ad508532175c1371713583af16aee036c}{roundoff\+\_\+indices}} & \doxylink{gram__schmidt__mixed_8cc_a63ac726b6527571e7b2f1ac7b7f58d75}{Precision} indices to include in the legend. \\
+\hline
+{\em origin\+\_\+x} & Horizontal origin of the legend panel. \\
+\hline
+{\em origin\+\_\+y} & Vertical origin of the legend panel. \\
+\hline
+{\em width} & Panel width in normalized plot coordinates. \\
+\hline
+{\em height} & Panel height in normalized plot coordinates. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00564\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00565\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ origin\ "{}}\ <<\ origin\_x\ <<\ \textcolor{stringliteral}{"{},"{}}\ <<\ origin\_y\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00566\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ size\ "{}}\ <<\ width\ <<\ \textcolor{stringliteral}{"{},"{}}\ <<\ height\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00567\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ border\(\backslash\)n"{}};}
+\DoxyCodeLine{00568\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ tics\(\backslash\)n"{}};}
+\DoxyCodeLine{00569\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ title\(\backslash\)n"{}};}
+\DoxyCodeLine{00570\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ xlabel\(\backslash\)n"{}};}
+\DoxyCodeLine{00571\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ ylabel\(\backslash\)n"{}};}
+\DoxyCodeLine{00572\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ logscale\ x\(\backslash\)n"{}};}
+\DoxyCodeLine{00573\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}unset\ logscale\ y\(\backslash\)n"{}};}
+\DoxyCodeLine{00574\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ xrange\ [0:1]\(\backslash\)n"{}};}
+\DoxyCodeLine{00575\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ yrange\ [0:1]\(\backslash\)n"{}};}
+\DoxyCodeLine{00576\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ key\ horizontal\ center\ top\ box\ opaque\(\backslash\)n"{}};}
+\DoxyCodeLine{00577\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ key\ samplen\ 1.2\(\backslash\)n"{}};}
+\DoxyCodeLine{00578\ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}set\ key\ spacing\ 1.1\(\backslash\)n"{}};}
+\DoxyCodeLine{00579\ }
+\DoxyCodeLine{00580\ \ \ \ \ \textcolor{keywordflow}{if}\ (\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ad508532175c1371713583af16aee036c}{roundoff\_indices}}.empty())\ \{}
+\DoxyCodeLine{00581\ \ \ \ \ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}plot\ NaN\ notitle\(\backslash\)n"{}};}
+\DoxyCodeLine{00582\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00583\ \ \ \ \ \}}
+\DoxyCodeLine{00584\ }
+\DoxyCodeLine{00585\ \ \ \ \ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_acb6fbb58e37e5c52a40ccad8653f4409}{write\_multiline\_plot}}(script,\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_ad508532175c1371713583af16aee036c}{roundoff\_indices}}.size(),\ [\&](std::size\_t\ i)\ \{}
+\DoxyCodeLine{00586\ \ \ \ \ \ \ \ \ const\ std::size\_t\ precision\_index\ =\ roundoff\_indices[i];}
+\DoxyCodeLine{00587\ \ \ \ \ \ \ \ \ script\ <<\ \textcolor{stringliteral}{"{}2\ with\ lines\ lw\ 2\ lt\ "{}}\ <<\ (i+1)}
+\DoxyCodeLine{00588\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ dt\ 2\ title\ '"{}}\ <<\ precision\_names[precision\_index]}
+\DoxyCodeLine{00589\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ unit\ roundoff'"{}};}
+\DoxyCodeLine{00590\ \ \ \ \ \});}
+\DoxyCodeLine{00591\ \}}
+
+\end{DoxyCode}
+
+
+\label{doc-var-members}
+\Hypertarget{gram__schmidt__mixed_8cc_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!data\_dir@{data\_dir}}
+\index{data\_dir@{data\_dir}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{data\_dir}{data\_dir}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_ac7484bb0c10f9ae6b0d5c5c2fa5434c8} 
+std::\+filesystem::\+path data\+\_\+dir = "{}gnuplot/\+data"{}\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!m@{m}}
+\index{m@{m}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{m}{m}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06} 
+std::\+size\+\_\+t m = 10\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!matrix\_dir@{matrix\_dir}}
+\index{matrix\_dir@{matrix\_dir}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{matrix\_dir}{matrix\_dir}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8} 
+std::\+filesystem::\+path matrix\+\_\+dir = "{}./\+matrix/\+"{}\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!n@{n}}
+\index{n@{n}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{n}{n}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215} 
+std::\+size\+\_\+t n = 100\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{gram__schmidt__mixed_8cc_af22361a1965bc3aabab7c79dce82c618}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!plot\_dir@{plot\_dir}}
+\index{plot\_dir@{plot\_dir}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{plot\_dir}{plot\_dir}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_af22361a1965bc3aabab7c79dce82c618} 
+std::\+filesystem::\+path plot\+\_\+dir = "{}./\+gnuplot"{}\hspace{0.3cm}{\ttfamily [static]}}
+
+\Hypertarget{gram__schmidt__mixed_8cc_ab9f644b4fd81edcd01d35f1c8d464535}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!precision\_names@{precision\_names}}
+\index{precision\_names@{precision\_names}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{precision\_names}{precision\_names}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_ab9f644b4fd81edcd01d35f1c8d464535} 
+std::\+array$<$const char\texorpdfstring{$\ast$}{*}, 9$>$ precision\+\_\+names\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [constexpr]}}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ \{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{stringliteral}{"{}FP8"{}},\ \textcolor{stringliteral}{"{}bfloat16"{}},\ \textcolor{stringliteral}{"{}FP16"{}},\ \textcolor{stringliteral}{"{}FP32"{}},\ \textcolor{stringliteral}{"{}FP64"{}},\ \textcolor{stringliteral}{"{}FP128"{}},\ \textcolor{stringliteral}{"{}FP256"{}},\ \textcolor{stringliteral}{"{}FP512"{}},\ \textcolor{stringliteral}{"{}FP1024"{}}}
+\DoxyCodeLine{\}\}}
+
+\end{DoxyCode}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{\{}
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{stringliteral}{"{}FP8"{}},\ \textcolor{stringliteral}{"{}bfloat16"{}},\ \textcolor{stringliteral}{"{}FP16"{}},\ \textcolor{stringliteral}{"{}FP32"{}},\ \textcolor{stringliteral}{"{}FP64"{}},\ \textcolor{stringliteral}{"{}FP128"{}},\ \textcolor{stringliteral}{"{}FP256"{}},\ \textcolor{stringliteral}{"{}FP512"{}},\ \textcolor{stringliteral}{"{}FP1024"{}}}
+\DoxyCodeLine{00073\ \}\};}
+
+\end{DoxyCode}
+\Hypertarget{gram__schmidt__mixed_8cc_a298930a640b46582a2c8f2a48c6b5398}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!results@{results}}
+\index{results@{results}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{results}{results}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a298930a640b46582a2c8f2a48c6b5398} 
+\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a84e04eb8d0babf744caf6b567dc4471e}{Result\+Map}} results\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Stores results of four precision runs before they are reordered into the plot data and saved to file later. 
+
+\Hypertarget{gram__schmidt__mixed_8cc_afe0ed161afbbbdbfde02ac48352398b1}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!results2@{results2}}
+\index{results2@{results2}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{results2}{results2}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_afe0ed161afbbbdbfde02ac48352398b1} 
+\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_aee752b13f80bc2082942d8127f803579}{Result\+Map2}} results2\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Stores results of two precision runs before they are reordered into the plot data and saved to file later. 
+
+\Hypertarget{gram__schmidt__mixed_8cc_ad508532175c1371713583af16aee036c}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!roundoff\_indices@{roundoff\_indices}}
+\index{roundoff\_indices@{roundoff\_indices}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{roundoff\_indices}{roundoff\_indices}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_ad508532175c1371713583af16aee036c} 
+std::\+vector$<$std::\+size\+\_\+t$>$ roundoff\+\_\+indices\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Stores \doxylink{gram__schmidt__mixed_8cc_a34c63a3a70c5c1009f9a8816b3289a33}{Precision\+Tuple} indices of unit roundoffs to be added to the plots. 
+
+\Hypertarget{gram__schmidt__mixed_8cc_a0d7ac8de6102b9232af1f7682e00b3f3}\index{gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}!seed\_str@{seed\_str}}
+\index{seed\_str@{seed\_str}!gram\_schmidt\_mixed.cc@{gram\_schmidt\_mixed.cc}}
+\doxysubsubsection{\texorpdfstring{seed\_str}{seed\_str}}
+{\footnotesize\ttfamily \label{gram__schmidt__mixed_8cc_a0d7ac8de6102b9232af1f7682e00b3f3} 
+std::\+string seed\+\_\+str\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+seed\+\_\+str is first read in from the matrix file name and then stored globally to be later used in the plot file name 
+

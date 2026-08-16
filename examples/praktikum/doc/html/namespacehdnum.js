@@ -1,0 +1,25 @@
+var namespacehdnum =
+[
+    [ "is_cpfloat", "structhdnum_1_1is__cpfloat.html", null ],
+    [ "is_cpfloat&lt; CPFloat&lt; m, e &gt; &gt;", "structhdnum_1_1is__cpfloat_3_01CPFloat_3_01m_00_01e_01_4_01_4.html", null ],
+    [ "is_gmp", "structhdnum_1_1is__gmp.html", null ],
+    [ "is_gmp&lt; FP&lt; m &gt; &gt;", "structhdnum_1_1is__gmp_3_01FP_3_01m_01_4_01_4.html", null ],
+    [ "Result", "structhdnum_1_1Result.html", "structhdnum_1_1Result" ],
+    [ "calculate_errors", "namespacehdnum.html#a289730b738202cdb707239bc04e16fa0", null ],
+    [ "cgs2_2_mixed", "namespacehdnum.html#aa191b63622c76bb4dafbb628c71a007a", null ],
+    [ "cgs2_mixed", "namespacehdnum.html#a40a9727812e8d3e89cdf09f0880459c3", null ],
+    [ "cgs_mixed", "namespacehdnum.html#a950401edcbd90548374032a66e1b1388", null ],
+    [ "frobenius_norm", "namespacehdnum.html#ac9e34867362c736d9e18e21303c3457f", null ],
+    [ "make_finite", "namespacehdnum.html#aff04cabe1f180af972533216fa84013a", null ],
+    [ "make_identity", "namespacehdnum.html#a656f8c0d9bd5636c4f7b660914f7377f", null ],
+    [ "matrix_cast", "namespacehdnum.html#ab357ebf874494f1ea2c9737b31de200b", null ],
+    [ "mgs2_2_mixed", "namespacehdnum.html#ae6a359563600106e9e6e50e31d8baeae", null ],
+    [ "mgs2_mixed", "namespacehdnum.html#a32b66f71e18c3f2e459a05e8fd8d594f", null ],
+    [ "mgs_mixed", "namespacehdnum.html#a346fdb2ef804c275a584929a548098e5", null ],
+    [ "mixed_cast", "namespacehdnum.html#a6adb847d9be490e5b7b804c149c37090", null ],
+    [ "parseMatrixMarketValue", "namespacehdnum.html#a66fd05a4c3786efb03d4536a9b189650", null ],
+    [ "readMatrixFromFileMatrixMarketHighPrec", "namespacehdnum.html#a1ad08a41d805d5d24e30cd5c4b1c6796", null ],
+    [ "run_gram_schmidt_mixed", "namespacehdnum.html#ac10b4c5935878e279d8804aea24f6c33", null ],
+    [ "run_gram_schmidt_mixed2", "namespacehdnum.html#a22139d45934850ed9f8c69d1a6975b6e", null ],
+    [ "writeMatrixMarketHighPrec", "namespacehdnum.html#a20d09620abaacbc6293b92a023a6e0a9", null ]
+];

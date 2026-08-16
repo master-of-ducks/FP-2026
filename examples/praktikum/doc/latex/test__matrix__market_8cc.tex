@@ -1,0 +1,84 @@
+\doxysection{/\+home/\+lucia/\+\+Documents/\+\+FP/\+hdnum/\+examples/\+praktikum/\+test\+\_\+matrix\+\_\+market.cc File Reference}
+\hypertarget{test__matrix__market_8cc}{}\label{test__matrix__market_8cc}\index{/home/lucia/Documents/FP/hdnum/examples/praktikum/test\_matrix\_market.cc@{/home/lucia/Documents/FP/hdnum/examples/praktikum/test\_matrix\_market.cc}}
+
+
+Quick test for the accuracy of the Matrix\+Market read and write functions for FP1024 (only compares first entries).  
+
+
+{\ttfamily \+\#include "{}../\+../\+hdnum.\+hh"{}}\newline
+{\ttfamily \+\#include "{}../\+../\+src/\+gram\+\_\+schmidt\+\_\+mixed.\+hh"{}}\newline
+{\ttfamily \+\#include "{}../\+../\+src/\+testmatrices.\+hh"{}}\newline
+{\ttfamily \+\#include $<$array$>$}\newline
+{\ttfamily \+\#include $<$cmath$>$}\newline
+{\ttfamily \+\#include $<$iomanip$>$}\newline
+{\ttfamily \+\#include $<$iostream$>$}\newline
+{\ttfamily \+\#include $<$tuple$>$}\newline
+{\ttfamily \+\#include $<$fstream$>$}\newline
+{\ttfamily \+\#include $<$filesystem$>$}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \doxymbox{\hyperlink{test__matrix__market_8cc_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Quick test for the accuracy of the Matrix\+Market read and write functions for FP1024 (only compares first entries). 
+
+
+
+\label{doc-func-members}
+\Hypertarget{test__matrix__market_8cc_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{test__matrix__market_8cc_ae66f6b31b5ad750f1fe042a706a4e3d4}\index{test\_matrix\_market.cc@{test\_matrix\_market.cc}!main@{main}}
+\index{main@{main}!test\_matrix\_market.cc@{test\_matrix\_market.cc}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{test__matrix__market_8cc_ae66f6b31b5ad750f1fe042a706a4e3d4} 
+int main (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}}\ =\ 100;}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}}\ =\ 10;}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ seed\_u\ =\ 10;}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ seed\_v\ =\ 11;}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{comment}{//\ delete\ all\ files\ in\ matrix\ directory}}
+\DoxyCodeLine{00029\ \ \ \ \ std::filesystem::path\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8}{matrix\_dir}}\ =\ \textcolor{stringliteral}{"{}test"{}};}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keywordflow}{if}\ (std::filesystem::exists(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8}{matrix\_dir}}))\ \{}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ entry\ :\ std::filesystem::directory\_iterator(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8}{matrix\_dir}}))\ \{}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ std::filesystem::remove(entry.path());}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00034\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ std::filesystem::create\_directory(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8}{matrix\_dir}});}
+\DoxyCodeLine{00036\ \ \ \ \ \}}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{comment}{//\ Generate\ FP1024\ matrix}}
+\DoxyCodeLine{00039\ \ \ \ \ DenseMatrix<FP1024>\ A\_kappa(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}},\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}});}
+\DoxyCodeLine{00040\ \ \ \ \ randsvd<FP1024>(A\_kappa,\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<FP1024>}}((\textcolor{keywordtype}{double})\ 1),\ seed\_u,\ seed\_v);}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{comment}{//\ print\ first\ entry\ of\ generated\ matrix}}
+\DoxyCodeLine{00043\ \ \ \ \ std::cout\ <<\ std::setprecision(320);}
+\DoxyCodeLine{00044\ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}print\ A\_before[0][0]:\ "{}}\ <<\ A\_kappa[0][0]\ <<\ std::endl;}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{comment}{//\ write\ generated\ matrix\ to\ MatrixMarket\ file}}
+\DoxyCodeLine{00047\ \ \ \ \ std::string\ filename\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8}{matrix\_dir}}.u8string()\ +\ \textcolor{stringliteral}{"{}/test\_matrix\_read.mtx"{}};}
+\DoxyCodeLine{00048\ \ \ \ \ \doxymbox{\hyperlink{namespacehdnum_a20d09620abaacbc6293b92a023a6e0a9}{writeMatrixMarketHighPrec}}(A\_kappa,\ filename);}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{comment}{//\ read\ matrix\ from\ file}}
+\DoxyCodeLine{00051\ \ \ \ \ DenseMatrix<FP1024>\ test(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}},\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}});}
+\DoxyCodeLine{00052\ \ \ \ \ \doxymbox{\hyperlink{namespacehdnum_a1ad08a41d805d5d24e30cd5c4b1c6796}{readMatrixFromFileMatrixMarketHighPrec<FP1024>}}(test,\ filename);}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{comment}{//\ print\ first\ entry\ of\ newly\ read-\/in\ matrix}}
+\DoxyCodeLine{00055\ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}print\ A\_after[0][0]:\ "{}}\ <<\ test[0][0]\ <<\ std::endl;}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{comment}{//\ print\ the\ difference\ between\ the\ two\ entries}}
+\DoxyCodeLine{00058\ \ \ \ \ std::cout\ <<\ std::setprecision(10);}
+\DoxyCodeLine{00059\ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}diff:\ "{}}\ <<\ test[0][0]\ -\/\ A\_kappa[0][0]\ <<\ std::endl;}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \}}
+
+\end{DoxyCode}

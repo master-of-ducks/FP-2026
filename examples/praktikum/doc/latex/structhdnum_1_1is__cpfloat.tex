@@ -1,0 +1,36 @@
+\doxysection{hdnum::\+is\+\_\+cpfloat\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structhdnum_1_1is__cpfloat}{}\label{structhdnum_1_1is__cpfloat}\index{hdnum::is\_cpfloat$<$ T $>$@{hdnum::is\_cpfloat$<$ T $>$}}
+
+
+Type-\/trait that detects whether a type is a CPFloat specialization.  
+
+
+
+
+{\ttfamily \+\#include $<$gram\+\_\+schmidt\+\_\+mixed.\+hh$>$}
+
+Inheritance diagram for hdnum::\+is\+\_\+cpfloat\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>}:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{structhdnum_1_1is__cpfloat}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$class T$>$\newline
+struct hdnum::\+is\+\_\+cpfloat$<$ T $>$}
+Type-\/trait that detects whether a type is a CPFloat specialization. 
+
+This trait inherits from {\ttfamily std::\+true\+\_\+type} when the inspected type is {\ttfamily CPFloat\texorpdfstring{$<$}{<}\doxylink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m},e\texorpdfstring{$>$}{>}} for some template parameters {\ttfamily \doxylink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}} and {\ttfamily e}, and from {\ttfamily std::\+false\+\_\+type} otherwise. It is used in SFINAE-\/enabled overloads to provide mixed-\/precision conversions that are specific to the project\textquotesingle{}s low-\/precision {\ttfamily CPFloat} wrapper.
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & The type to inspect. \\
+\hline
+\end{DoxyTemplParams}
+
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+/\+home/\+lucia/\+\+Documents/\+\+FP/\+hdnum/\+src/\+\doxymbox{\hyperlink{gram__schmidt__mixed_8hh}{gram\+\_\+schmidt\+\_\+mixed.\+hh}}\end{DoxyCompactItemize}

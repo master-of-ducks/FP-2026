@@ -1,0 +1,86 @@
+\doxysection{/\+home/\+lucia/\+\+Documents/\+\+FP/\+hdnum/\+src/\+gram\+\_\+schmidt\+\_\+mixed.hh File Reference}
+\hypertarget{gram__schmidt__mixed_8hh}{}\label{gram__schmidt__mixed_8hh}\index{/home/lucia/Documents/FP/hdnum/src/gram\_schmidt\_mixed.hh@{/home/lucia/Documents/FP/hdnum/src/gram\_schmidt\_mixed.hh}}
+
+
+Mixed-\/precision Gram-\/\+Schmidt source file.  
+
+
+{\ttfamily \+\#include $<$cmath$>$}\newline
+{\ttfamily \+\#include $<$type\+\_\+traits$>$}\newline
+{\ttfamily \+\#include $<$utility$>$}\newline
+{\ttfamily \+\#include $<$stdexcept$>$}\newline
+{\ttfamily \+\#include "{}densematrix.\+hh"{}}\newline
+{\ttfamily \+\#include "{}vector.\+hh"{}}\newline
+{\ttfamily \+\#include "{}../\+hdnum.\+hh"{}}\newline
+{\ttfamily \+\#include "{}lowprec\+\_\+cpfloat.\+hh"{}}\newline
+{\ttfamily \+\#include "{}highprec\+\_\+gmp.\+hh"{}}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \doxymbox{\hyperlink{structhdnum_1_1is__cpfloat}{hdnum::\+is\+\_\+cpfloat$<$ T $>$}}
+\begin{DoxyCompactList}\small\item\em Type-\/trait that detects whether a type is a CPFloat specialization. \end{DoxyCompactList}\item 
+struct \doxymbox{\hyperlink{structhdnum_1_1is__cpfloat_3_01CPFloat_3_01m_00_01e_01_4_01_4}{hdnum::\+is\+\_\+cpfloat$<$ CPFloat$<$ m, e $>$ $>$}}
+\item 
+struct \doxymbox{\hyperlink{structhdnum_1_1is__gmp}{hdnum::\+is\+\_\+gmp$<$ T $>$}}
+\begin{DoxyCompactList}\small\item\em Type-\/trait that detects whether a type is an {\ttfamily FP\texorpdfstring{$<$}{<}\doxylink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}\texorpdfstring{$>$}{>}} (GMP-\/backed) type. \end{DoxyCompactList}\item 
+struct \doxymbox{\hyperlink{structhdnum_1_1is__gmp_3_01FP_3_01m_01_4_01_4}{hdnum::\+is\+\_\+gmp$<$ FP$<$ m $>$ $>$}}
+\item 
+struct \doxymbox{\hyperlink{structhdnum_1_1Result}{hdnum::\+\+Result}}
+\begin{DoxyCompactList}\small\item\em Container for orthogonality and representation error metrics. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \doxymbox{\hyperlink{namespacehdnum}{hdnum}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+double \doxymbox{\hyperlink{namespacehdnum_aff04cabe1f180af972533216fa84013a}{hdnum::\+make\+\_\+finite}} (double value)
+\begin{DoxyCompactList}\small\item\em Sanitize a floating-\/point value by mapping NaN or infinite values to zero. \end{DoxyCompactList}\item 
+{\footnotesize template$<$class To, class From, typename std::\+enable\+\_\+if$<$ \doxymbox{\hyperlink{structhdnum_1_1is__cpfloat}{is\+\_\+cpfloat}}$<$ From $>$::\+value, int $>$::\+type Enable = 0$>$ }\\To \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{hdnum::\+mixed\+\_\+cast}} (const From \&value)
+\begin{DoxyCompactList}\small\item\em Convert a CPFloat-\/backed value to another scalar type. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T1$>$ }\\static T1 \doxymbox{\hyperlink{namespacehdnum_ac9e34867362c736d9e18e21303c3457f}{hdnum::\+frobenius\+\_\+norm}} (const Dense\+Matrix$<$ T1 $>$ \&A)
+\begin{DoxyCompactList}\small\item\em Compute the Frobenius norm of a dense matrix. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T$>$ }\\static Dense\+Matrix$<$ T $>$ \doxymbox{\hyperlink{namespacehdnum_a656f8c0d9bd5636c4f7b660914f7377f}{hdnum::\+make\+\_\+identity}} (std::\+size\+\_\+t \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}}, std::\+size\+\_\+t \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}})
+\begin{DoxyCompactList}\small\item\em Create an n-\/by-\/m identity-\/like matrix. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T1, typename T2$>$ }\\Dense\+Matrix$<$ T2 $>$ \doxymbox{\hyperlink{namespacehdnum_ab357ebf874494f1ea2c9737b31de200b}{hdnum::\+matrix\+\_\+cast}} (const Dense\+Matrix$<$ T1 $>$ \&A\+\_\+low)
+\begin{DoxyCompactList}\small\item\em Convert a dense matrix from one scalar type to another. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename REAL$>$ }\\void \doxymbox{\hyperlink{namespacehdnum_a20d09620abaacbc6293b92a023a6e0a9}{hdnum::\+write\+Matrix\+Market\+High\+Prec}} (const Dense\+Matrix$<$ REAL $>$ \&A, const std::\+string \&filename)
+\begin{DoxyCompactList}\small\item\em Write a dense matrix in a simple Matrix Market coordinate-\/like format. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename REAL$>$ }\\REAL \doxymbox{\hyperlink{namespacehdnum_a66fd05a4c3786efb03d4536a9b189650}{hdnum::\+parse\+Matrix\+Market\+Value}} (const std::\+string \&token)
+\begin{DoxyCompactList}\small\item\em Parse a single numeric token from a Matrix Market-\/style file. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename REAL, typename std::\+enable\+\_\+if$<$ \doxymbox{\hyperlink{structhdnum_1_1is__gmp}{is\+\_\+gmp}}$<$ REAL $>$::\+value, int $>$::\+type Enable = 0$>$ }\\void \doxymbox{\hyperlink{namespacehdnum_a1ad08a41d805d5d24e30cd5c4b1c6796}{hdnum::\+read\+Matrix\+From\+File\+Matrix\+Market\+High\+Prec}} (Dense\+Matrix$<$ REAL $>$ \&A, const std::\+string \&filename)
+\begin{DoxyCompactList}\small\item\em Read a simple Matrix Market-\/like coordinate file into {\ttfamily A}. \end{DoxyCompactList}\item 
+{\footnotesize template$<$class T1, class T2, class T3, class T4$>$ }\\Dense\+Matrix$<$ T1 $>$ \doxymbox{\hyperlink{namespacehdnum_a950401edcbd90548374032a66e1b1388}{hdnum::\+cgs\+\_\+mixed}} (const Dense\+Matrix$<$ T1 $>$ \&A)
+\begin{DoxyCompactList}\small\item\em Performs Gram-\/\+Schmidt orthogonalization with mixed precision on a matrix. \end{DoxyCompactList}\item 
+{\footnotesize template$<$class T1, class T2, class T3, class T4$>$ }\\Dense\+Matrix$<$ T1 $>$ \doxymbox{\hyperlink{namespacehdnum_a40a9727812e8d3e89cdf09f0880459c3}{hdnum::\+cgs2\+\_\+mixed}} (const Dense\+Matrix$<$ T1 $>$ \&A)
+\begin{DoxyCompactList}\small\item\em Performs Gram-\/\+Schmidt with reorthogonalization with mixed precision on a matrix. \end{DoxyCompactList}\item 
+{\footnotesize template$<$class T1, class T2$>$ }\\Dense\+Matrix$<$ T2 $>$ \doxymbox{\hyperlink{namespacehdnum_aa191b63622c76bb4dafbb628c71a007a}{hdnum::\+cgs2\+\_\+2\+\_\+mixed}} (const Dense\+Matrix$<$ T1 $>$ \&A)
+\begin{DoxyCompactList}\small\item\em Performs classical Gram-\/\+Schmidt orthogonalization twice, first in lower and then in higher precision. \end{DoxyCompactList}\item 
+{\footnotesize template$<$class T1, class T2, class T3, class T4$>$ }\\Dense\+Matrix$<$ T1 $>$ \doxymbox{\hyperlink{namespacehdnum_a346fdb2ef804c275a584929a548098e5}{hdnum::\+mgs\+\_\+mixed}} (const Dense\+Matrix$<$ T1 $>$ \&A)
+\begin{DoxyCompactList}\small\item\em Performs modified Gram-\/\+Schmidt orthogonalization with mixed precision on a matrix. \end{DoxyCompactList}\item 
+{\footnotesize template$<$class T1, class T2, class T3, class T4$>$ }\\Dense\+Matrix$<$ T1 $>$ \doxymbox{\hyperlink{namespacehdnum_a32b66f71e18c3f2e459a05e8fd8d594f}{hdnum::\+mgs2\+\_\+mixed}} (const Dense\+Matrix$<$ T1 $>$ \&A)
+\begin{DoxyCompactList}\small\item\em Performs modified Gram-\/\+Schmidt with reorthogonalization with mixed precision on a matrix. \end{DoxyCompactList}\item 
+{\footnotesize template$<$class T1, class T2$>$ }\\Dense\+Matrix$<$ T2 $>$ \doxymbox{\hyperlink{namespacehdnum_ae6a359563600106e9e6e50e31d8baeae}{hdnum::\+mgs2\+\_\+2\+\_\+mixed}} (const Dense\+Matrix$<$ T1 $>$ \&A)
+\begin{DoxyCompactList}\small\item\em Performs modified Gram-\/\+Schmidt orthogonalization twice, first in lower and then in higher precision. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T$>$ }\\std::\+pair$<$ FP1024, FP1024 $>$ \doxymbox{\hyperlink{namespacehdnum_a289730b738202cdb707239bc04e16fa0}{hdnum::\+calculate\+\_\+errors}} (const Dense\+Matrix$<$ T $>$ \&A\+\_\+low, const Dense\+Matrix$<$ T $>$ \&Q\+\_\+low)
+\begin{DoxyCompactList}\small\item\em Compute orthogonality and representation errors in FP1024 precision. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T1, typename T2, typename T3, typename T4$>$ }\\\doxymbox{\hyperlink{structhdnum_1_1Result}{Result}} \doxymbox{\hyperlink{namespacehdnum_ac10b4c5935878e279d8804aea24f6c33}{hdnum::\+run\+\_\+gram\+\_\+schmidt\+\_\+mixed}} (Dense\+Matrix$<$ T1 $>$ \&A, std::\+string combo\+\_\+label, std::\+string \doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}})
+\begin{DoxyCompactList}\small\item\em Execute a set of mixed-\/precision Gram-\/\+Schmidt experiments and collect errors. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T1, typename T2$>$ }\\\doxymbox{\hyperlink{structhdnum_1_1Result}{Result}} \doxymbox{\hyperlink{namespacehdnum_a22139d45934850ed9f8c69d1a6975b6e}{hdnum::\+run\+\_\+gram\+\_\+schmidt\+\_\+mixed2}} (Dense\+Matrix$<$ T2 $>$ \&A, std::\+string combo\+\_\+label, std::\+string \doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}})
+\begin{DoxyCompactList}\small\item\em Run two-\/stage CGS2/\+\+MGS2 experiments:\+ low-\/precision then high-\/precision. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Mixed-\/precision Gram-\/\+Schmidt source file. 
+
+Implements six mixed-\/precision versions of the Gram-\/\+Schmidt algorithm and any helpers needed:\+
+\begin{DoxyItemize}
+\item a cast between native, low and high precision data types
+\item helpers to read and write matrices in a Matrix\+Market file format
+\item various helpers to calculate errors
+\end{DoxyItemize}
+
+The first four Gram-\/\+Schmidt versions implement CGS/\+\+MGS/\+\+CGS2/\+\+MGS2 using four different precisions for storage data type, inner products, axpy-\/operation and normalization.
+
+The last two versions implement CGS2/\+\+MGS2 using one precision uniformly for the first orthogonalisation and the second for re-\/orthogonalisation. 

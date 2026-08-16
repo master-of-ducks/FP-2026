@@ -1,0 +1,36 @@
+\doxysection{hdnum::\+is\+\_\+gmp\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structhdnum_1_1is__gmp}{}\label{structhdnum_1_1is__gmp}\index{hdnum::is\_gmp$<$ T $>$@{hdnum::is\_gmp$<$ T $>$}}
+
+
+Type-\/trait that detects whether a type is an {\ttfamily FP\texorpdfstring{$<$}{<}\doxylink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}\texorpdfstring{$>$}{>}} (GMP-\/backed) type.  
+
+
+
+
+{\ttfamily \+\#include $<$gram\+\_\+schmidt\+\_\+mixed.\+hh$>$}
+
+Inheritance diagram for hdnum::\+is\+\_\+gmp\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>}:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{structhdnum_1_1is__gmp}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$class T$>$\newline
+struct hdnum::\+is\+\_\+gmp$<$ T $>$}
+Type-\/trait that detects whether a type is an {\ttfamily FP\texorpdfstring{$<$}{<}\doxylink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}\texorpdfstring{$>$}{>}} (GMP-\/backed) type. 
+
+Similar to {\ttfamily \doxylink{structhdnum_1_1is__cpfloat}{is\+\_\+cpfloat}}, this trait resolves to {\ttfamily std::\+true\+\_\+type} when the inspected type is an {\ttfamily FP\texorpdfstring{$<$}{<}\doxylink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}\texorpdfstring{$>$}{>}} instantiation and to {\ttfamily std::\+false\+\_\+type} otherwise. It enables overload resolution for mixed casts involving GMP high-\/precision types.
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & The type to inspect. \\
+\hline
+\end{DoxyTemplParams}
+
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+/\+home/\+lucia/\+\+Documents/\+\+FP/\+hdnum/\+src/\+\doxymbox{\hyperlink{gram__schmidt__mixed_8hh}{gram\+\_\+schmidt\+\_\+mixed.\+hh}}\end{DoxyCompactItemize}

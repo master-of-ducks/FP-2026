@@ -1,0 +1,54 @@
+\doxysection{/\+home/\+lucia/\+\+Documents/\+\+FP/\+hdnum/\+examples/\+praktikum/\+test\+\_\+baseline.cc File Reference}
+\hypertarget{test__baseline_8cc}{}\label{test__baseline_8cc}\index{/home/lucia/Documents/FP/hdnum/examples/praktikum/test\_baseline.cc@{/home/lucia/Documents/FP/hdnum/examples/praktikum/test\_baseline.cc}}
+
+
+Test mixed precision implementation baseline againt single precision implementation.  
+
+
+{\ttfamily \+\#include "{}../\+../\+hdnum.\+hh"{}}\newline
+{\ttfamily \+\#include "{}../\+../\+src/\+gram\+\_\+schmidt\+\_\+mixed.\+hh"{}}\newline
+{\ttfamily \+\#include "{}../\+../\+src/\+testmatrices.\+hh"{}}\newline
+{\ttfamily \+\#include $<$cassert$>$}\newline
+{\ttfamily \+\#include $<$iostream$>$}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \doxymbox{\hyperlink{test__baseline_8cc_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Test mixed precision implementation baseline againt single precision implementation. 
+
+
+
+\label{doc-func-members}
+\Hypertarget{test__baseline_8cc_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{test__baseline_8cc_ae66f6b31b5ad750f1fe042a706a4e3d4}\index{test\_baseline.cc@{test\_baseline.cc}!main@{main}}
+\index{main@{main}!test\_baseline.cc@{test\_baseline.cc}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{test__baseline_8cc_ae66f6b31b5ad750f1fe042a706a4e3d4} 
+int main (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\#ifdef\ HDNUM\_HAS\_CPFLOAT}}
+\DoxyCodeLine{00055\ \ \ \ \ check\_one\_precision<FP8>(\textcolor{stringliteral}{"{}FP8"{}});}
+\DoxyCodeLine{00056\ \ \ \ \ check\_one\_precision<bfloat16>(\textcolor{stringliteral}{"{}bfloat16"{}});}
+\DoxyCodeLine{00057\ \ \ \ \ check\_one\_precision<FP16>(\textcolor{stringliteral}{"{}FP16"{}});}
+\DoxyCodeLine{00058\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00059\ \ \ \ \ check\_one\_precision<FP32>(\textcolor{stringliteral}{"{}FP32"{}});}
+\DoxyCodeLine{00060\ \ \ \ \ check\_one\_precision<FP64>(\textcolor{stringliteral}{"{}FP64"{}});}
+\DoxyCodeLine{00061\ \textcolor{preprocessor}{\#ifdef\ HDNUM\_HAS\_GMP}}
+\DoxyCodeLine{00062\ \ \ \ \ check\_one\_precision<FP128>(\textcolor{stringliteral}{"{}FP128"{}});}
+\DoxyCodeLine{00063\ \ \ \ \ check\_one\_precision<FP256>(\textcolor{stringliteral}{"{}FP256"{}});}
+\DoxyCodeLine{00064\ \ \ \ \ check\_one\_precision<FP512>(\textcolor{stringliteral}{"{}FP512"{}});}
+\DoxyCodeLine{00065\ \ \ \ \ check\_one\_precision<FP1024>(\textcolor{stringliteral}{"{}FP1024"{}});}
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00069\ \}}
+
+\end{DoxyCode}

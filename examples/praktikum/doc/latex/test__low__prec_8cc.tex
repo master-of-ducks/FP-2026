@@ -1,0 +1,48 @@
+\doxysection{/\+home/\+lucia/\+\+Documents/\+\+FP/\+hdnum/\+examples/\+praktikum/\+test\+\_\+low\+\_\+prec.cc File Reference}
+\hypertarget{test__low__prec_8cc}{}\label{test__low__prec_8cc}\index{/home/lucia/Documents/FP/hdnum/examples/praktikum/test\_low\_prec.cc@{/home/lucia/Documents/FP/hdnum/examples/praktikum/test\_low\_prec.cc}}
+
+
+Test suite to find the condition number at which different low precision runs fail.  
+
+
+{\ttfamily \+\#include $<$cassert$>$}\newline
+{\ttfamily \+\#include $<$cmath$>$}\newline
+{\ttfamily \+\#include $<$iomanip$>$}\newline
+{\ttfamily \+\#include $<$iostream$>$}\newline
+{\ttfamily \+\#include $<$vector$>$}\newline
+{\ttfamily \+\#include "{}../\+../\+hdnum.\+hh"{}}\newline
+{\ttfamily \+\#include "{}../\+../\+src/\+gram\+\_\+schmidt\+\_\+mixed.\+hh"{}}\newline
+{\ttfamily \+\#include "{}../\+../\+src/\+testmatrices.\+hh"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \doxymbox{\hyperlink{test__low__prec_8cc_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}} ()
+\begin{DoxyCompactList}\small\item\em Fallback entry point when CPFloat support is unavailable. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Test suite to find the condition number at which different low precision runs fail. 
+
+Previous experiments have shown, that orthogonalisations using FP8 or FP16 fail relatively early. This test suite is intended to finde the precise condition number for which the different implementations fail, using uniform precisions. 
+
+\label{doc-func-members}
+\Hypertarget{test__low__prec_8cc_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{test__low__prec_8cc_ae66f6b31b5ad750f1fe042a706a4e3d4}\index{test\_low\_prec.cc@{test\_low\_prec.cc}!main@{main}}
+\index{main@{main}!test\_low\_prec.cc@{test\_low\_prec.cc}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{test__low__prec_8cc_ae66f6b31b5ad750f1fe042a706a4e3d4} 
+int main (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Fallback entry point when CPFloat support is unavailable. 
+
+The test suite depends on FP8 and FP16, so it only prints a message in builds that do not enable low-\/precision support. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00170\ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}Low-\/precision\ CPFloat\ support\ is\ not\ enabled\ in\ this\ build."{}}\ <<\ std::endl;}
+\DoxyCodeLine{00171\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00172\ \}}
+
+\end{DoxyCode}

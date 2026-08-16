@@ -1,0 +1,629 @@
+\doxysection{gram\+\_\+schmidt\+\_\+mixed.\+hh}
+\hypertarget{gram__schmidt__mixed_8hh_source}{}\label{gram__schmidt__mixed_8hh_source}\index{/home/lucia/Documents/FP/hdnum/src/gram\_schmidt\_mixed.hh@{/home/lucia/Documents/FP/hdnum/src/gram\_schmidt\_mixed.hh}}
+\doxymbox{\hyperlink{gram__schmidt__mixed_8hh}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <stdexcept>}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ "{}densematrix.hh"{}}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ "{}vector.hh"{}}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ "{}../hdnum.hh"{}}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ "{}lowprec\_cpfloat.hh"{}}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ "{}highprec\_gmp.hh"{}}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{keyword}{namespace\ }\doxymbox{\hyperlink{namespacehdnum}{hdnum}}\ \{}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{comment}{//\ \#ifdef\ HDNUM\_HAS\_CPFLOAT}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ \#ifdef\ HDNUM\_HAS\_GMP}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00045\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00046\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structhdnum_1_1is__cpfloat}{is\_cpfloat}}\ :\ std::false\_type\ \{\};}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{int}\ m,\ \textcolor{keywordtype}{int}\ e>}
+\DoxyCodeLine{00049\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structhdnum_1_1is__cpfloat}{is\_cpfloat}}<CPFloat<\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}},\ e>>\ :\ std::true\_type\ \{\};}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00061\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00062\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structhdnum_1_1is__gmp}{is\_gmp}}\ :\ std::false\_type\ \{\};}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{int}\ m>}
+\DoxyCodeLine{00065\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structhdnum_1_1is__gmp}{is\_gmp}}<FP<\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}}>>\ :\ std::true\_type\ \{\};}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00080\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{double}\ \doxymbox{\hyperlink{namespacehdnum_aff04cabe1f180af972533216fa84013a}{make\_finite}}(\textcolor{keywordtype}{double}\ value)\ \{}
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keywordflow}{return}\ std::isfinite(value)\ ?\ value\ :\ 0.0;}
+\DoxyCodeLine{00082\ \}}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \textcolor{comment}{//============================================}}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00099\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class\ }To,\ \textcolor{keyword}{class\ }From,}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::enable\_if<is\_cpfloat<From>::value,}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}>::type\ Enable\ =\ 0>}
+\DoxyCodeLine{00102\ \textcolor{keyword}{inline}\ To\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast}}(\textcolor{keyword}{const}\ From\&\ value)\ \{}
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{keywordflow}{return}\ To(\doxymbox{\hyperlink{namespacehdnum_aff04cabe1f180af972533216fa84013a}{make\_finite}}(value.getNumber()));}
+\DoxyCodeLine{00104\ \}}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00118\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class\ }To,\ \textcolor{keyword}{class\ }From,}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::enable\_if<is\_gmp<From>::value\ \&\&\ is\_gmp<To>::value,}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}>::type\ Enable\ =\ 0>}
+\DoxyCodeLine{00121\ \textcolor{keyword}{inline}\ To\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast}}(\textcolor{keyword}{const}\ From\&\ value)\ \{}
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keywordflow}{return}\ To(value);}
+\DoxyCodeLine{00123\ \}}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00138\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class\ }To,\ \textcolor{keyword}{class\ }From,}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::enable\_if<is\_gmp<From>::value\ \&\&\ !\doxymbox{\hyperlink{structhdnum_1_1is__gmp}{is\_gmp<To>::value}},}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}>::type\ Enable\ =\ 0>}
+\DoxyCodeLine{00141\ \textcolor{keyword}{inline}\ To\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast}}(\textcolor{keyword}{const}\ From\&\ value)\ \{}
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keywordflow}{return}\ To(\doxymbox{\hyperlink{namespacehdnum_aff04cabe1f180af972533216fa84013a}{make\_finite}}(value.getNumber().get\_d()));}
+\DoxyCodeLine{00143\ \}}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00145\ \textcolor{comment}{//\ Cast\ from\ float/double}}
+\DoxyCodeLine{00158\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class\ }To,\ \textcolor{keyword}{class\ }From,}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::enable\_if<std::is\_same<From,\ float>::value\ ||}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_same<From,\ double>::value,}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}>::type\ Enable\ =\ 0>}
+\DoxyCodeLine{00162\ \textcolor{keyword}{inline}\ To\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast}}(\textcolor{keyword}{const}\ From\&\ value)\ \{}
+\DoxyCodeLine{00163\ \ \ \ \ \textcolor{keywordflow}{return}\ To(\doxymbox{\hyperlink{namespacehdnum_aff04cabe1f180af972533216fa84013a}{make\_finite}}(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{double}\textcolor{keyword}{>}(value)));}
+\DoxyCodeLine{00164\ \}}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \textcolor{comment}{//============================================}}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00180\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1>}
+\DoxyCodeLine{00181\ \textcolor{keyword}{static}\ T1\ \doxymbox{\hyperlink{namespacehdnum_ac9e34867362c736d9e18e21303c3457f}{frobenius\_norm}}(\textcolor{keyword}{const}\ DenseMatrix<T1>\&\ A)\ \{}
+\DoxyCodeLine{00182\ \ \ \ \ \textcolor{comment}{//\ using\ std::sqrt;}}
+\DoxyCodeLine{00183\ \ \ \ \ T1\ sum\ =\ T1(0.0);}
+\DoxyCodeLine{00184\ \ \ \ \ \textcolor{keywordflow}{for}\ (std::size\_t\ i\ =\ 0;\ i\ <\ A.rowsize();\ ++i)\ \{}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (std::size\_t\ j\ =\ 0;\ j\ <\ A.colsize();\ ++j)\ \{}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \ \ \ \ sum\ +=\ A[i][j]\ *\ A[i][j];}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00188\ \ \ \ \ \}}
+\DoxyCodeLine{00189\ \ \ \ \ \textcolor{keywordflow}{return}\ sqrt(sum);}
+\DoxyCodeLine{00190\ \}}
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00205\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00206\ \textcolor{keyword}{static}\ DenseMatrix<T>\ \doxymbox{\hyperlink{namespacehdnum_a656f8c0d9bd5636c4f7b660914f7377f}{make\_identity}}(std::size\_t\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}},\ std::size\_t\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}})\ \{}
+\DoxyCodeLine{00207\ \ \ \ \ DenseMatrix<T>\ I(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}},\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}},T(0.0));}
+\DoxyCodeLine{00208\ \ \ \ \ \textcolor{keywordflow}{for}\ (std::size\_t\ i\ =\ 0;\ i\ <\ std::min(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}},\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}});\ ++i)\ \{}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ I[i][i]\ =\ T(1.0);}
+\DoxyCodeLine{00210\ \ \ \ \ \}}
+\DoxyCodeLine{00211\ \ \ \ \ \textcolor{keywordflow}{return}\ I;}
+\DoxyCodeLine{00212\ \}}
+\DoxyCodeLine{00213\ }
+\DoxyCodeLine{00227\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2>}
+\DoxyCodeLine{00228\ DenseMatrix<T2>\ \doxymbox{\hyperlink{namespacehdnum_ab357ebf874494f1ea2c9737b31de200b}{matrix\_cast}}(\textcolor{keyword}{const}\ DenseMatrix<T1>\&\ A\_low)\ \{}
+\DoxyCodeLine{00229\ \ \ \ \ DenseMatrix<T2>\ A(A\_low.rowsize(),\ A\_low.colsize(),\ 0);}
+\DoxyCodeLine{00230\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ A\_low.rowsize();\ i++)\ \{}
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ 0;\ j\ <\ A\_low.colsize();\ j++)\ \{}
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ \ \ \ \ A\ [i][j]\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T2>}}(A\_low[i][j]);}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00234\ \ \ \ \ \}}
+\DoxyCodeLine{00235\ \ \ \ \ \textcolor{keywordflow}{return}\ A;}
+\DoxyCodeLine{00236\ \}}
+\DoxyCodeLine{00237\ }
+\DoxyCodeLine{00251\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ REAL>}
+\DoxyCodeLine{00252\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{namespacehdnum_a20d09620abaacbc6293b92a023a6e0a9}{writeMatrixMarketHighPrec}}(\textcolor{keyword}{const}\ DenseMatrix<REAL>\&\ A,\ \textcolor{keyword}{const}\ std::string\&\ filename)\ \{}
+\DoxyCodeLine{00253\ \ \ \ \ std::ofstream\ file(filename);}
+\DoxyCodeLine{00254\ \ \ \ \ \textcolor{keywordflow}{if}\ (!file.is\_open())\ \{}
+\DoxyCodeLine{00255\ \ \ \ \ \ \ \ \ HDNUM\_ERROR(\textcolor{stringliteral}{"{}Error\ opening\ file:\ "{}}\ +\ filename);}
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00257\ \ \ \ \ \}}
+\DoxyCodeLine{00258\ }
+\DoxyCodeLine{00259\ \ \ \ \ \textcolor{keyword}{const}\ std::size\_t\ rows\ =\ A.rowsize();}
+\DoxyCodeLine{00260\ \ \ \ \ \textcolor{keyword}{const}\ std::size\_t\ cols\ =\ A.colsize();}
+\DoxyCodeLine{00261\ }
+\DoxyCodeLine{00262\ \ \ \ \ \textcolor{comment}{//\ count\ non-\/zero\ entries\ (MatrixMarket\ coordinate\ format)}}
+\DoxyCodeLine{00263\ \ \ \ \ std::size\_t\ nnz\ =\ 0;}
+\DoxyCodeLine{00264\ \ \ \ \ \textcolor{keywordflow}{for}\ (std::size\_t\ i\ =\ 0;\ i\ <\ rows;\ ++i)\ \{}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (std::size\_t\ j\ =\ 0;\ j\ <\ cols;\ ++j)\ \{}
+\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (A[i][j]\ !=\ REAL(0))\ ++nnz;}
+\DoxyCodeLine{00267\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00268\ \ \ \ \ \}}
+\DoxyCodeLine{00269\ }
+\DoxyCodeLine{00270\ \ \ \ \ \textcolor{comment}{//\ Header:\ rows\ cols\ nnz}}
+\DoxyCodeLine{00271\ \ \ \ \ file\ <<\ rows\ <<\ \textcolor{stringliteral}{"{}\ "{}}\ <<\ cols\ <<\ \textcolor{stringliteral}{"{}\ "{}}\ <<\ nnz\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00272\ }
+\DoxyCodeLine{00273\ \ \ \ \ \textcolor{comment}{//\ Write\ entries\ as\ 1-\/based\ indices}}
+\DoxyCodeLine{00274\ \ \ \ \ file\ <<\ std::setprecision(300);}
+\DoxyCodeLine{00275\ \ \ \ \ \textcolor{keywordflow}{for}\ (std::size\_t\ i\ =\ 0;\ i\ <\ rows;\ ++i)\ \{}
+\DoxyCodeLine{00276\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (std::size\_t\ j\ =\ 0;\ j\ <\ cols;\ ++j)\ \{}
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ REAL\ val\ =\ A[i][j];}
+\DoxyCodeLine{00278\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (val\ !=\ REAL(0))\ \{}
+\DoxyCodeLine{00279\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ file\ <<\ (i\ +\ 1)\ <<\ \textcolor{stringliteral}{"{}\ "{}}\ <<\ (j\ +\ 1)\ <<\ \textcolor{stringliteral}{"{}\ "{}}\ <<\ val\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00281\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00282\ \ \ \ \ \}}
+\DoxyCodeLine{00283\ \ \ \ \ file.close();}
+\DoxyCodeLine{00284\ \}}
+\DoxyCodeLine{00285\ }
+\DoxyCodeLine{00286\ \textcolor{preprocessor}{\#}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00299\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ REAL>}
+\DoxyCodeLine{00300\ \textcolor{keyword}{inline}\ REAL\ \doxymbox{\hyperlink{namespacehdnum_a66fd05a4c3786efb03d4536a9b189650}{parseMatrixMarketValue}}(\textcolor{keyword}{const}\ std::string\&\ token)\ \{}
+\DoxyCodeLine{00301\ \textcolor{preprocessor}{\#ifdef\ HDNUM\_HAS\_GMP}}
+\DoxyCodeLine{00302\ \ \ \ \ mpf\_class\ parsed\_value(0,\ 4096);}
+\DoxyCodeLine{00303\ \ \ \ \ \textcolor{keywordflow}{if}\ (parsed\_value.set\_str(token.c\_str(),\ 10)\ !=\ 0)\ \{}
+\DoxyCodeLine{00304\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::invalid\_argument(\textcolor{stringliteral}{"{}Invalid\ MatrixMarket\ numeric\ value:\ "{}}\ +\ token);}
+\DoxyCodeLine{00305\ \ \ \ \ \}}
+\DoxyCodeLine{00306\ \ \ \ \ \textcolor{keywordflow}{return}\ REAL(parsed\_value);}
+\DoxyCodeLine{00307\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00308\ \ \ \ \ std::istringstream\ value\_stream(token);}
+\DoxyCodeLine{00309\ \ \ \ \ REAL\ value\{\};}
+\DoxyCodeLine{00310\ \ \ \ \ value\_stream\ >>\ value;}
+\DoxyCodeLine{00311\ \ \ \ \ \textcolor{keywordflow}{if}\ (!value\_stream)\ \{}
+\DoxyCodeLine{00312\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::invalid\_argument(\textcolor{stringliteral}{"{}Invalid\ MatrixMarket\ numeric\ value:\ "{}}\ +\ token);}
+\DoxyCodeLine{00313\ \ \ \ \ \}}
+\DoxyCodeLine{00314\ \ \ \ \ \textcolor{keywordflow}{return}\ value;}
+\DoxyCodeLine{00315\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00316\ \}}
+\DoxyCodeLine{00317\ }
+\DoxyCodeLine{00335\ template\ <typename\ REAL,\ typename\ std::enable\_if<is\_gmp<REAL>::value,}
+\DoxyCodeLine{00336\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}>::type\ Enable\ =\ 0>}
+\DoxyCodeLine{00337\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{namespacehdnum_a1ad08a41d805d5d24e30cd5c4b1c6796}{readMatrixFromFileMatrixMarketHighPrec}}(DenseMatrix<REAL>\&\ A,}
+\DoxyCodeLine{00338\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ filename)\ \{}
+\DoxyCodeLine{00339\ \ \ \ \ std::string\ buffer;}
+\DoxyCodeLine{00340\ \ \ \ \ std::ifstream\ fin(filename.c\_str());}
+\DoxyCodeLine{00341\ \ \ \ \ std::size\_t\ i\ =\ 0;}
+\DoxyCodeLine{00342\ \ \ \ \ std::size\_t\ j\ =\ 0;}
+\DoxyCodeLine{00343\ \ \ \ \ \textcolor{keywordflow}{if}\ (fin.is\_open())\ \{}
+\DoxyCodeLine{00344\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ ignore\ all\ comments\ from\ the\ file\ (starting\ with\ \%)}}
+\DoxyCodeLine{00345\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ (fin.peek()\ ==\ \textcolor{charliteral}{'\%'})\ fin.ignore(2048,\ \textcolor{charliteral}{'\(\backslash\)n'});}
+\DoxyCodeLine{00346\ }
+\DoxyCodeLine{00347\ \ \ \ \ \ \ \ \ std::getline(fin,\ buffer);}
+\DoxyCodeLine{00348\ \ \ \ \ \ \ \ \ std::istringstream\ first\_line(buffer);}
+\DoxyCodeLine{00349\ \ \ \ \ \ \ \ \ first\_line\ >>\ i\ >>\ j;}
+\DoxyCodeLine{00350\ \ \ \ \ \ \ \ \ DenseMatrix<REAL>\ A\_temp(i,\ j);}
+\DoxyCodeLine{00351\ }
+\DoxyCodeLine{00352\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (A.colsize()\ !=\ A\_temp.colsize()\ ||\ A.rowsize()\ !=\ A\_temp.rowsize())\ \{}
+\DoxyCodeLine{00353\ \ \ \ \ \ \ \ \ \ \ \ \ HDNUM\_ERROR(\textcolor{stringliteral}{"{}MatrixMarket\ file\ dimesions\ do\ not\ match\ A"{}});}
+\DoxyCodeLine{00354\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00355\ }
+\DoxyCodeLine{00356\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ (std::getline(fin,\ buffer))\ \{}
+\DoxyCodeLine{00357\ \ \ \ \ \ \ \ \ \ \ \ \ std::istringstream\ iss(buffer);}
+\DoxyCodeLine{00358\ }
+\DoxyCodeLine{00359\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ valstr;}
+\DoxyCodeLine{00360\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!(iss\ >>\ i\ >>\ j\ >>\ valstr))}
+\DoxyCodeLine{00361\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00362\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ REAL\ a\_ij\ =\ \doxymbox{\hyperlink{namespacehdnum_a66fd05a4c3786efb03d4536a9b189650}{parseMatrixMarketValue<REAL>}}(valstr);}
+\DoxyCodeLine{00363\ \ \ \ \ \ \ \ \ \ \ \ \ A\_temp(i\ -\/\ 1,\ j\ -\/\ 1)\ =\ a\_ij;}
+\DoxyCodeLine{00364\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00365\ \ \ \ \ \ \ \ \ A\ =\ A\_temp;}
+\DoxyCodeLine{00366\ \ \ \ \ \ \ \ \ fin.close();}
+\DoxyCodeLine{00367\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00368\ \ \ \ \ \ \ \ \ HDNUM\_ERROR(\textcolor{stringliteral}{"{}Could\ not\ open\ file!\ \(\backslash\)"{}"{}}\ +\ filename\ +\ \textcolor{stringliteral}{"{}\(\backslash\)"{}"{}});}
+\DoxyCodeLine{00369\ \ \ \ \ \}}
+\DoxyCodeLine{00370\ \}}
+\DoxyCodeLine{00371\ }
+\DoxyCodeLine{00389\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ REAL,}
+\DoxyCodeLine{00390\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::enable\_if<std::is\_same<REAL,\ float>::value\ ||}
+\DoxyCodeLine{00391\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_same<REAL,\ double>::value\ ||}
+\DoxyCodeLine{00392\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ is\_cpfloat<REAL>::value,}
+\DoxyCodeLine{00393\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}>::type\ Enable\ =\ 0>}
+\DoxyCodeLine{00394\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{namespacehdnum_a1ad08a41d805d5d24e30cd5c4b1c6796}{readMatrixFromFileMatrixMarketHighPrec}}(DenseMatrix<REAL>\&\ A,}
+\DoxyCodeLine{00395\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ filename)\ \{}
+\DoxyCodeLine{00396\ \ \ \ \ std::string\ buffer;}
+\DoxyCodeLine{00397\ \ \ \ \ std::ifstream\ fin(filename.c\_str());}
+\DoxyCodeLine{00398\ \ \ \ \ std::size\_t\ i\ =\ 0;}
+\DoxyCodeLine{00399\ \ \ \ \ std::size\_t\ j\ =\ 0;}
+\DoxyCodeLine{00400\ \ \ \ \ \textcolor{keywordflow}{if}\ (fin.is\_open())\ \{}
+\DoxyCodeLine{00401\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ ignore\ all\ comments\ from\ the\ file\ (starting\ with\ \%)}}
+\DoxyCodeLine{00402\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ (fin.peek()\ ==\ \textcolor{charliteral}{'\%'})\ fin.ignore(2048,\ \textcolor{charliteral}{'\(\backslash\)n'});}
+\DoxyCodeLine{00403\ }
+\DoxyCodeLine{00404\ \ \ \ \ \ \ \ \ std::getline(fin,\ buffer);}
+\DoxyCodeLine{00405\ \ \ \ \ \ \ \ \ std::istringstream\ first\_line(buffer);}
+\DoxyCodeLine{00406\ \ \ \ \ \ \ \ \ first\_line\ >>\ i\ >>\ j;}
+\DoxyCodeLine{00407\ \ \ \ \ \ \ \ \ DenseMatrix<REAL>\ A\_temp(i,\ j);}
+\DoxyCodeLine{00408\ }
+\DoxyCodeLine{00409\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (A.colsize()\ !=\ A\_temp.colsize()\ ||\ A.rowsize()\ !=\ A\_temp.rowsize())\ \{}
+\DoxyCodeLine{00410\ \ \ \ \ \ \ \ \ \ \ \ \ HDNUM\_ERROR(\textcolor{stringliteral}{"{}MatrixMarket\ file\ dimesions\ do\ not\ match\ A"{}});}
+\DoxyCodeLine{00411\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00412\ }
+\DoxyCodeLine{00413\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ (std::getline(fin,\ buffer))\ \{}
+\DoxyCodeLine{00414\ \ \ \ \ \ \ \ \ \ \ \ \ std::istringstream\ iss(buffer);}
+\DoxyCodeLine{00415\ }
+\DoxyCodeLine{00416\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ valstr;}
+\DoxyCodeLine{00417\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!(iss\ >>\ i\ >>\ j\ >>\ valstr))}
+\DoxyCodeLine{00418\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00419\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ REAL\ a\_ij\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<REAL>}}(std::stod(valstr));}
+\DoxyCodeLine{00420\ \ \ \ \ \ \ \ \ \ \ \ \ A\_temp(i\ -\/\ 1,\ j\ -\/\ 1)\ =\ a\_ij;}
+\DoxyCodeLine{00421\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00422\ \ \ \ \ \ \ \ \ A\ =\ A\_temp;}
+\DoxyCodeLine{00423\ \ \ \ \ \ \ \ \ fin.close();}
+\DoxyCodeLine{00424\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00425\ \ \ \ \ \ \ \ \ HDNUM\_ERROR(\textcolor{stringliteral}{"{}Could\ not\ open\ file!\ \(\backslash\)"{}"{}}\ +\ filename\ +\ \textcolor{stringliteral}{"{}\(\backslash\)"{}"{}});}
+\DoxyCodeLine{00426\ \ \ \ \ \}}
+\DoxyCodeLine{00427\ \}}
+\DoxyCodeLine{00428\ }
+\DoxyCodeLine{00429\ \textcolor{preprocessor}{\#pragma\ region\ GS\_implementation}}
+\DoxyCodeLine{00430\ }
+\DoxyCodeLine{00440\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ T1,\ \textcolor{keyword}{class}\ T2,\ \textcolor{keyword}{class}\ T3,\ \textcolor{keyword}{class}\ T4>}
+\DoxyCodeLine{00441\ DenseMatrix<T1>\ \doxymbox{\hyperlink{namespacehdnum_a950401edcbd90548374032a66e1b1388}{cgs\_mixed}}(\textcolor{keyword}{const}\ DenseMatrix<T1>\&\ A)\ \{}
+\DoxyCodeLine{00442\ \ \ \ \ \textcolor{keyword}{using\ }std::sqrt;}
+\DoxyCodeLine{00443\ \ \ \ \ DenseMatrix<T1>\ Q(A);}
+\DoxyCodeLine{00444\ }
+\DoxyCodeLine{00445\ \ \ \ \ \textcolor{comment}{//\ for\ all\ columns\ except\ the\ first}}
+\DoxyCodeLine{00446\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ k\ =\ 1;\ k\ <\ Q.colsize();\ k++)\ \{}
+\DoxyCodeLine{00447\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ orthogonalize\ column\ k\ against\ all\ previous}}
+\DoxyCodeLine{00448\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ 0;\ j\ <\ k;\ j++)\ \{}
+\DoxyCodeLine{00449\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ compute\ factor}}
+\DoxyCodeLine{00450\ \ \ \ \ \ \ \ \ \ \ \ \ T2\ sum\_nom(0.0);}
+\DoxyCodeLine{00451\ \ \ \ \ \ \ \ \ \ \ \ \ T2\ sum\_denom(0.0);}
+\DoxyCodeLine{00452\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ Q.rowsize();\ i++)\ \{}
+\DoxyCodeLine{00453\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T2\ a\_k\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T2>}}(A[i][k]);}
+\DoxyCodeLine{00454\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T2\ q\_ij\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T2>}}(Q[i][j]);}
+\DoxyCodeLine{00455\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sum\_nom\ +=\ a\_k\ *\ q\_ij;}
+\DoxyCodeLine{00456\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sum\_denom\ +=\ q\_ij\ *\ q\_ij;}
+\DoxyCodeLine{00457\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00458\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ modify}}
+\DoxyCodeLine{00459\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (sum\_denom\ ==\ T2(0.0))\ \{}
+\DoxyCodeLine{00460\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::invalid\_argument(\textcolor{stringliteral}{"{}CGS:\ Encountered\ zero\ denominator\ in\ modification"{}});}
+\DoxyCodeLine{00461\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00462\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T3\ alpha\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T3>}}(sum\_nom)\ /\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T3>}}(sum\_denom);}
+\DoxyCodeLine{00463\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ Q.rowsize();\ i++)\ \{}
+\DoxyCodeLine{00464\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T3\ q\_ij\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T3>}}(Q[i][j]);}
+\DoxyCodeLine{00465\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ T3\ q\_ik\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T3>}}(Q[i][k]);}
+\DoxyCodeLine{00466\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ q\_ik\ -\/=\ (alpha\ *\ q\_ij);}
+\DoxyCodeLine{00467\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Q[i][k]\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T1>}}(q\_ik);}
+\DoxyCodeLine{00468\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00469\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00470\ \ \ \ \ \}}
+\DoxyCodeLine{00471\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ 0;\ j\ <\ Q.colsize();\ j++)\ \{}
+\DoxyCodeLine{00472\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ compute\ norm\ of\ column\ j}}
+\DoxyCodeLine{00473\ \ \ \ \ \ \ \ \ T4\ sum(0.0);}
+\DoxyCodeLine{00474\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ Q.rowsize();\ i++)\ \{}
+\DoxyCodeLine{00475\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T4\ q\_ij\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T4>}}(Q[i][j]);}
+\DoxyCodeLine{00476\ \ \ \ \ \ \ \ \ \ \ \ \ sum\ +=\ q\_ij\ *\ q\_ij;}
+\DoxyCodeLine{00477\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00478\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (sum\ ==\ T4(0.0))\ \{}
+\DoxyCodeLine{00479\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::invalid\_argument(\textcolor{stringliteral}{"{}CGS:\ Encountered\ zero\ denominator\ in\ normalization"{}});}
+\DoxyCodeLine{00480\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00481\ \ \ \ \ \ \ \ \ T4\ norm\ =\ sqrt(\doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T4>}}(sum));}
+\DoxyCodeLine{00482\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ scale}}
+\DoxyCodeLine{00483\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ Q.rowsize();\ i++)\ \{}
+\DoxyCodeLine{00484\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T4\ q\_ij\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T4>}}(Q[i][j]);}
+\DoxyCodeLine{00485\ \ \ \ \ \ \ \ \ \ \ \ \ Q[i][j]\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T1>}}(q\_ij\ /\ norm);}
+\DoxyCodeLine{00486\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00487\ \ \ \ \ \}}
+\DoxyCodeLine{00488\ \ \ \ \ \textcolor{keywordflow}{return}\ Q;}
+\DoxyCodeLine{00489\ \}}
+\DoxyCodeLine{00490\ }
+\DoxyCodeLine{00500\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ T1,\ \textcolor{keyword}{class}\ T2,\ \textcolor{keyword}{class}\ T3,\ \textcolor{keyword}{class}\ T4>}
+\DoxyCodeLine{00501\ DenseMatrix<T1>\ \doxymbox{\hyperlink{namespacehdnum_a40a9727812e8d3e89cdf09f0880459c3}{cgs2\_mixed}}(\textcolor{keyword}{const}\ DenseMatrix<T1>\&\ A)\ \{}
+\DoxyCodeLine{00502\ \ \ \ \ \textcolor{keyword}{using\ }std::sqrt;}
+\DoxyCodeLine{00503\ \ \ \ \ DenseMatrix<T1>\ Q(A);}
+\DoxyCodeLine{00504\ \ \ \ \ DenseMatrix<T1>\ A2(A);}
+\DoxyCodeLine{00505\ \ \ \ \ \textcolor{comment}{//\ perform\ projection\ twice}}
+\DoxyCodeLine{00506\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ r\ =\ 0;\ r\ <\ 2;\ r++)\ \{}
+\DoxyCodeLine{00507\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ for\ all\ columns\ except\ the\ first}}
+\DoxyCodeLine{00508\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ k\ =\ 1;\ k\ <\ Q.colsize();\ k++)\ \{}
+\DoxyCodeLine{00509\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ orthogonalize\ column\ k\ against\ all\ previous}}
+\DoxyCodeLine{00510\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ 0;\ j\ <\ k;\ j++)\ \{}
+\DoxyCodeLine{00511\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ compute\ factor}}
+\DoxyCodeLine{00512\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ T2\ sum\_nom(0.0);}
+\DoxyCodeLine{00513\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ T2\ sum\_denom(0.0);}
+\DoxyCodeLine{00514\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ Q.rowsize();\ i++)\ \{}
+\DoxyCodeLine{00515\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T2\ a\_k\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T2>}}(A2[i][k]);}
+\DoxyCodeLine{00516\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T2\ q\_ij\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T2>}}(Q[i][j]);}
+\DoxyCodeLine{00517\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sum\_nom\ +=\ a\_k\ *\ q\_ij;}
+\DoxyCodeLine{00518\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sum\_denom\ +=\ q\_ij\ *\ q\_ij;}
+\DoxyCodeLine{00519\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00520\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ modify}}
+\DoxyCodeLine{00521\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (sum\_denom\ ==\ T2(0.0))\ \{}
+\DoxyCodeLine{00522\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::invalid\_argument(\textcolor{stringliteral}{"{}CGS2:\ Encountered\ zero\ denominator\ in\ modification"{}});}
+\DoxyCodeLine{00523\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00524\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T3\ alpha\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T3>}}(sum\_nom)\ /\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T3>}}(sum\_denom);}
+\DoxyCodeLine{00525\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ Q.rowsize();\ i++)\ \{}
+\DoxyCodeLine{00526\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T3\ q\_ij\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T3>}}(Q[i][j]);}
+\DoxyCodeLine{00527\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ T3\ q\_ik\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T3>}}(Q[i][k]);}
+\DoxyCodeLine{00528\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ q\_ik\ -\/=\ (alpha\ *\ q\_ij);}
+\DoxyCodeLine{00529\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Q[i][k]\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T1>}}(q\_ik);}
+\DoxyCodeLine{00530\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00531\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00532\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00533\ \ \ \ \ \ \ \ \ A2\ =\ Q;}
+\DoxyCodeLine{00534\ \ \ \ \ \}}
+\DoxyCodeLine{00535\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ 0;\ j\ <\ Q.colsize();\ j++)\ \{}
+\DoxyCodeLine{00536\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ compute\ norm\ of\ column\ j}}
+\DoxyCodeLine{00537\ \ \ \ \ \ \ \ \ T4\ sum(0.0);}
+\DoxyCodeLine{00538\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ Q.rowsize();\ i++)\ \{}
+\DoxyCodeLine{00539\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T4\ q\_ij\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T4>}}(Q[i][j]);}
+\DoxyCodeLine{00540\ \ \ \ \ \ \ \ \ \ \ \ \ sum\ +=\ q\_ij\ *\ q\_ij;}
+\DoxyCodeLine{00541\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00542\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (sum\ ==\ T4(0.0))\ \{}
+\DoxyCodeLine{00543\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::invalid\_argument(\textcolor{stringliteral}{"{}CGS2:\ Encountered\ zero\ denominator\ in\ normalization"{}});}
+\DoxyCodeLine{00544\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00545\ \ \ \ \ \ \ \ \ T4\ norm\ =\ sqrt(\doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T4>}}(sum));}
+\DoxyCodeLine{00546\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ scale}}
+\DoxyCodeLine{00547\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ Q.rowsize();\ i++)\ \{}
+\DoxyCodeLine{00548\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T4\ q\_ij\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T4>}}(Q[i][j]);}
+\DoxyCodeLine{00549\ \ \ \ \ \ \ \ \ \ \ \ \ Q[i][j]\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T1>}}(q\_ij\ /\ norm);}
+\DoxyCodeLine{00550\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00551\ \ \ \ \ \}}
+\DoxyCodeLine{00552\ \ \ \ \ \textcolor{keywordflow}{return}\ Q;}
+\DoxyCodeLine{00553\ \}}
+\DoxyCodeLine{00554\ }
+\DoxyCodeLine{00562\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ T1,\ \textcolor{keyword}{class}\ T2>}
+\DoxyCodeLine{00563\ DenseMatrix<T2>\ \doxymbox{\hyperlink{namespacehdnum_aa191b63622c76bb4dafbb628c71a007a}{cgs2\_2\_mixed}}(\textcolor{keyword}{const}\ DenseMatrix<T1>\&\ A)\ \{}
+\DoxyCodeLine{00564\ \ \ \ \ DenseMatrix<T1>\ Q(A);}
+\DoxyCodeLine{00565\ \ \ \ \ Q\ =\ \doxymbox{\hyperlink{namespacehdnum_a950401edcbd90548374032a66e1b1388}{cgs\_mixed<T1,T1,T1,T1>}}(Q);}
+\DoxyCodeLine{00566\ \ \ \ \ DenseMatrix<T2>\ Q2\ =\ \doxymbox{\hyperlink{namespacehdnum_ab357ebf874494f1ea2c9737b31de200b}{matrix\_cast<T1,T2>}}(Q);}
+\DoxyCodeLine{00567\ \ \ \ \ Q2\ =\ \doxymbox{\hyperlink{namespacehdnum_a950401edcbd90548374032a66e1b1388}{cgs\_mixed<T2,T2,T2,T2>}}(Q2);}
+\DoxyCodeLine{00568\ }
+\DoxyCodeLine{00569\ \ \ \ \ \textcolor{keywordflow}{return}\ Q2;}
+\DoxyCodeLine{00570\ \}}
+\DoxyCodeLine{00571\ }
+\DoxyCodeLine{00581\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ T1,\ \textcolor{keyword}{class}\ T2,\ \textcolor{keyword}{class}\ T3,\ \textcolor{keyword}{class}\ T4>}
+\DoxyCodeLine{00582\ DenseMatrix<T1>\ \doxymbox{\hyperlink{namespacehdnum_a346fdb2ef804c275a584929a548098e5}{mgs\_mixed}}(\textcolor{keyword}{const}\ DenseMatrix<T1>\&\ A)\ \{}
+\DoxyCodeLine{00583\ \ \ \ \ \textcolor{keyword}{using\ }std::sqrt;}
+\DoxyCodeLine{00584\ \ \ \ \ DenseMatrix<T1>\ Q(A);}
+\DoxyCodeLine{00585\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ k\ =\ 0;\ k\ <\ Q.colsize();\ k++)\ \{}
+\DoxyCodeLine{00586\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ modify\ all\ later\ columns\ with\ column\ k}}
+\DoxyCodeLine{00587\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ k\ +\ 1;\ j\ <\ Q.colsize();\ j++)\ \{}
+\DoxyCodeLine{00588\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ compute\ factor}}
+\DoxyCodeLine{00589\ \ \ \ \ \ \ \ \ \ \ \ \ T2\ sum\_nom(0.0);}
+\DoxyCodeLine{00590\ \ \ \ \ \ \ \ \ \ \ \ \ T2\ sum\_denom(0.0);}
+\DoxyCodeLine{00591\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ Q.rowsize();\ i++)\ \{}
+\DoxyCodeLine{00592\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T2\ q\_ik\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T2>}}(Q[i][k]);}
+\DoxyCodeLine{00593\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T2\ q\_ij\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T2>}}(Q[i][j]);}
+\DoxyCodeLine{00594\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sum\_nom\ +=\ q\_ij\ *\ q\_ik;}
+\DoxyCodeLine{00595\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sum\_denom\ +=\ q\_ik\ *\ q\_ik;}
+\DoxyCodeLine{00596\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00597\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ modify}}
+\DoxyCodeLine{00598\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (sum\_denom\ ==\ T2(0.0))\ \{}
+\DoxyCodeLine{00599\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::invalid\_argument(\textcolor{stringliteral}{"{}MGS:\ Encountered\ zero\ denominator\ in\ modification"{}});}
+\DoxyCodeLine{00600\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00601\ \ \ \ \ \ \ \ \ \ \ \ \ T3\ alpha\ =\ \ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T3>}}(sum\_nom)\ /\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T3>}}(sum\_denom);}
+\DoxyCodeLine{00602\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ Q.rowsize();\ i++)\ \{}
+\DoxyCodeLine{00603\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T3\ q\_ik\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T3>}}(Q[i][k]);}
+\DoxyCodeLine{00604\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ T3\ q\_ij\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T3>}}(Q[i][j]);}
+\DoxyCodeLine{00605\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ q\_ij\ -\/=\ (alpha\ *\ q\_ik);}
+\DoxyCodeLine{00606\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Q[i][j]\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T1>}}(q\_ij);}
+\DoxyCodeLine{00607\ }
+\DoxyCodeLine{00608\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00609\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00610\ \ \ \ \ \}}
+\DoxyCodeLine{00611\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ 0;\ j\ <\ Q.colsize();\ j++)\ \{}
+\DoxyCodeLine{00612\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ compute\ norm\ of\ column\ j}}
+\DoxyCodeLine{00613\ \ \ \ \ \ \ \ \ T4\ sum(0.0);}
+\DoxyCodeLine{00614\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ Q.rowsize();\ i++)\ \{}
+\DoxyCodeLine{00615\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T4\ q\_ij\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T4>}}(Q[i][j]);}
+\DoxyCodeLine{00616\ \ \ \ \ \ \ \ \ \ \ \ \ sum\ +=\ q\_ij\ *\ q\_ij;}
+\DoxyCodeLine{00617\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00618\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (sum\ ==\ T4(0.0))\ \{}
+\DoxyCodeLine{00619\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::invalid\_argument(\textcolor{stringliteral}{"{}MGS:\ Encountered\ zero\ denominator\ in\ normalization"{}});}
+\DoxyCodeLine{00620\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00621\ \ \ \ \ \ \ \ \ T4\ norm\ =\ sqrt(\doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T4>}}(sum));}
+\DoxyCodeLine{00622\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ scale}}
+\DoxyCodeLine{00623\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ Q.rowsize();\ i++)\ \{}
+\DoxyCodeLine{00624\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T4\ q\_ij\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T4>}}(Q[i][j]);}
+\DoxyCodeLine{00625\ \ \ \ \ \ \ \ \ \ \ \ \ Q[i][j]\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T1>}}(q\_ij\ /\ norm);}
+\DoxyCodeLine{00626\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00627\ \ \ \ \ \}}
+\DoxyCodeLine{00628\ \ \ \ \ \textcolor{keywordflow}{return}\ Q;}
+\DoxyCodeLine{00629\ \}}
+\DoxyCodeLine{00630\ }
+\DoxyCodeLine{00640\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ T1,\ \textcolor{keyword}{class}\ T2,\ \textcolor{keyword}{class}\ T3,\ \textcolor{keyword}{class}\ T4>}
+\DoxyCodeLine{00641\ DenseMatrix<T1>\ \doxymbox{\hyperlink{namespacehdnum_a32b66f71e18c3f2e459a05e8fd8d594f}{mgs2\_mixed}}(\textcolor{keyword}{const}\ DenseMatrix<T1>\&\ A)\ \{}
+\DoxyCodeLine{00642\ \ \ \ \ \textcolor{keyword}{using\ }std::sqrt;}
+\DoxyCodeLine{00643\ \ \ \ \ DenseMatrix<T1>\ Q(A);}
+\DoxyCodeLine{00644\ \ \ \ \ \textcolor{comment}{//\ perform\ projection\ twice}}
+\DoxyCodeLine{00645\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ r\ =\ 0;\ r\ <\ 2;\ r++)\ \{}
+\DoxyCodeLine{00646\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ k\ =\ 0;\ k\ <\ Q.colsize();\ k++)\ \{}
+\DoxyCodeLine{00647\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ modify\ all\ later\ columns\ with\ column\ k}}
+\DoxyCodeLine{00648\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ k\ +\ 1;\ j\ <\ Q.colsize();\ j++)\ \{}
+\DoxyCodeLine{00649\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ compute\ factor}}
+\DoxyCodeLine{00650\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ T2\ sum\_nom(0.0);}
+\DoxyCodeLine{00651\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ T2\ sum\_denom(0.0);}
+\DoxyCodeLine{00652\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ Q.rowsize();\ i++)\ \{}
+\DoxyCodeLine{00653\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T2\ q\_ik\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T2>}}(Q[i][k]);}
+\DoxyCodeLine{00654\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T2\ q\_ij\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T2>}}(Q[i][j]);}
+\DoxyCodeLine{00655\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sum\_nom\ +=\ q\_ij\ *\ q\_ik;}
+\DoxyCodeLine{00656\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sum\_denom\ +=\ q\_ik\ *\ q\_ik;}
+\DoxyCodeLine{00657\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00658\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ modify}}
+\DoxyCodeLine{00659\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (sum\_denom\ ==\ T2(0.0))\ \{}
+\DoxyCodeLine{00660\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::invalid\_argument(\textcolor{stringliteral}{"{}MGS2:\ Encountered\ zero\ denominator\ in\ modification"{}});}
+\DoxyCodeLine{00661\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00662\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ T3\ alpha\ =\ \ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T3>}}(sum\_nom)\ /\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T3>}}(sum\_denom);}
+\DoxyCodeLine{00663\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ Q.rowsize();\ i++)\ \{}
+\DoxyCodeLine{00664\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T3\ q\_ik\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T3>}}(Q[i][k]);}
+\DoxyCodeLine{00665\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ T3\ q\_ij\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T3>}}(Q[i][j]);}
+\DoxyCodeLine{00666\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ q\_ij\ -\/=\ (alpha\ *\ q\_ik);}
+\DoxyCodeLine{00667\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Q[i][j]\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T1>}}(q\_ij);}
+\DoxyCodeLine{00668\ }
+\DoxyCodeLine{00669\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00670\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00671\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00672\ \ \ \ \ \}}
+\DoxyCodeLine{00673\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ 0;\ j\ <\ Q.colsize();\ j++)\ \{}
+\DoxyCodeLine{00674\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ compute\ norm\ of\ column\ j}}
+\DoxyCodeLine{00675\ \ \ \ \ \ \ \ \ T4\ sum(0.0);}
+\DoxyCodeLine{00676\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ Q.rowsize();\ i++)\ \{}
+\DoxyCodeLine{00677\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T4\ q\_ij\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T4>}}(Q[i][j]);}
+\DoxyCodeLine{00678\ \ \ \ \ \ \ \ \ \ \ \ \ sum\ +=\ q\_ij\ *\ q\_ij;}
+\DoxyCodeLine{00679\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00680\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (sum\ ==\ T4(0.0))\ \{}
+\DoxyCodeLine{00681\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::invalid\_argument(\textcolor{stringliteral}{"{}MGS2:\ Encountered\ zero\ denominator\ in\ normalization"{}});}
+\DoxyCodeLine{00682\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00683\ \ \ \ \ \ \ \ \ T4\ norm\ =\ sqrt(\doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T4>}}(sum));}
+\DoxyCodeLine{00684\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ scale}}
+\DoxyCodeLine{00685\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ Q.rowsize();\ i++)\ \{}
+\DoxyCodeLine{00686\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T4\ q\_ij\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T4>}}(Q[i][j]);}
+\DoxyCodeLine{00687\ \ \ \ \ \ \ \ \ \ \ \ \ Q[i][j]\ =\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<T1>}}(q\_ij\ /\ norm);}
+\DoxyCodeLine{00688\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00689\ \ \ \ \ \}}
+\DoxyCodeLine{00690\ \ \ \ \ \textcolor{keywordflow}{return}\ Q;}
+\DoxyCodeLine{00691\ \}}
+\DoxyCodeLine{00692\ }
+\DoxyCodeLine{00700\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ T1,\ \textcolor{keyword}{class}\ T2>}
+\DoxyCodeLine{00701\ DenseMatrix<T2>\ \doxymbox{\hyperlink{namespacehdnum_ae6a359563600106e9e6e50e31d8baeae}{mgs2\_2\_mixed}}(\textcolor{keyword}{const}\ DenseMatrix<T1>\&\ A)\ \{}
+\DoxyCodeLine{00702\ \ \ \ \ DenseMatrix<T1>\ Q(A);}
+\DoxyCodeLine{00703\ \ \ \ \ Q\ =\ \doxymbox{\hyperlink{namespacehdnum_a346fdb2ef804c275a584929a548098e5}{mgs\_mixed<T1,T1,T1,T1>}}(Q);}
+\DoxyCodeLine{00704\ \ \ \ \ DenseMatrix<T2>\ Q2\ =\ \doxymbox{\hyperlink{namespacehdnum_ab357ebf874494f1ea2c9737b31de200b}{matrix\_cast<T1,T2>}}(Q);}
+\DoxyCodeLine{00705\ \ \ \ \ Q2\ =\ \doxymbox{\hyperlink{namespacehdnum_a346fdb2ef804c275a584929a548098e5}{mgs\_mixed<T2,T2,T2,T2>}}(Q2);}
+\DoxyCodeLine{00706\ }
+\DoxyCodeLine{00707\ \ \ \ \ \textcolor{keywordflow}{return}\ Q2;}
+\DoxyCodeLine{00708\ \}}
+\DoxyCodeLine{00709\ }
+\DoxyCodeLine{00710\ \textcolor{preprocessor}{\#pragma\ endregion\ GS\_implementation}}
+\DoxyCodeLine{00711\ }
+\DoxyCodeLine{00712\ \textcolor{preprocessor}{\#pragma\ region\ error\_calculation}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00723\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\ \{}
+\DoxyCodeLine{00724\ \ \ \ \ FP1024\ \doxymbox{\hyperlink{structhdnum_1_1Result_a6f6940d7a69ce881e1058ca03bed0a1b}{ortho\_err\_cgs}};}
+\DoxyCodeLine{00725\ \ \ \ \ FP1024\ \doxymbox{\hyperlink{structhdnum_1_1Result_ac2befeb6197e780a16e9696c609614de}{ortho\_err\_mgs}};}
+\DoxyCodeLine{00726\ \ \ \ \ FP1024\ \doxymbox{\hyperlink{structhdnum_1_1Result_aeeb492859c39288811c7d8f4aa9655b7}{ortho\_err\_cgs2}};}
+\DoxyCodeLine{00727\ \ \ \ \ FP1024\ \doxymbox{\hyperlink{structhdnum_1_1Result_ab65e6020118c95bad03a4e8c9ef41faf}{ortho\_err\_mgs2}};}
+\DoxyCodeLine{00728\ \ \ \ \ FP1024\ \doxymbox{\hyperlink{structhdnum_1_1Result_ac84002b61a6b39976565939a9d07a7f8}{rep\_err\_cgs}};}
+\DoxyCodeLine{00729\ \ \ \ \ FP1024\ \doxymbox{\hyperlink{structhdnum_1_1Result_a1f5edf945c2da0d145fe4adbb6deed4d}{rep\_err\_mgs}};}
+\DoxyCodeLine{00730\ \ \ \ \ FP1024\ \doxymbox{\hyperlink{structhdnum_1_1Result_a3fe611d80928fe218766ca81cb88da63}{rep\_err\_cgs2}};}
+\DoxyCodeLine{00731\ \ \ \ \ FP1024\ \doxymbox{\hyperlink{structhdnum_1_1Result_a08f58e045f8cc8f59e59eaa58fdc0109}{rep\_err\_mgs2}};}
+\DoxyCodeLine{00732\ \};}
+\DoxyCodeLine{00733\ }
+\DoxyCodeLine{00734\ }
+\DoxyCodeLine{00751\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00752\ std::pair<FP1024,\ FP1024>\ \doxymbox{\hyperlink{namespacehdnum_a289730b738202cdb707239bc04e16fa0}{calculate\_errors}}(\textcolor{keyword}{const}\ DenseMatrix<T>\&\ A\_low,\ \textcolor{keyword}{const}\ DenseMatrix<T>\&\ Q\_low)\ \{}
+\DoxyCodeLine{00753\ \ \ \ \ DenseMatrix<FP1024>\ A\ =\ \doxymbox{\hyperlink{namespacehdnum_ab357ebf874494f1ea2c9737b31de200b}{matrix\_cast<T,\ FP1024>}}(A\_low);}
+\DoxyCodeLine{00754\ \ \ \ \ DenseMatrix<FP1024>\ Q\ =\ \doxymbox{\hyperlink{namespacehdnum_ab357ebf874494f1ea2c9737b31de200b}{matrix\_cast<T,\ FP1024>}}(Q\_low);}
+\DoxyCodeLine{00755\ \ \ \ \ \textcolor{keyword}{const}\ DenseMatrix<FP1024>\ I\ =\ \doxymbox{\hyperlink{namespacehdnum_a656f8c0d9bd5636c4f7b660914f7377f}{make\_identity<FP1024>}}(A\_low.colsize(),\ A\_low.colsize());}
+\DoxyCodeLine{00756\ \ \ \ \ \textcolor{keyword}{const}\ DenseMatrix<FP1024>\ QtQ\ =\ Q.transpose()\ *\ Q;}
+\DoxyCodeLine{00757\ \ \ \ \ \textcolor{keyword}{const}\ DenseMatrix<FP1024>\ Aproj\ =\ Q\ *\ (Q.transpose()\ *\ A);}
+\DoxyCodeLine{00758\ \ \ \ \ \textcolor{keywordflow}{if}\ (QtQ.rowsize()\ !=\ I.rowsize())\ std::cout\ <<\ \textcolor{stringliteral}{"{}QtQ.rowsize()\ !=\ I.rowsize()"{}}\ <<\ std::endl;}
+\DoxyCodeLine{00759\ \ \ \ \ FP1024\ ortho\_err\ =\ \doxymbox{\hyperlink{namespacehdnum_ac9e34867362c736d9e18e21303c3457f}{frobenius\_norm<FP1024>}}(QtQ\ -\/\ I);}
+\DoxyCodeLine{00760\ \ \ \ \ \textcolor{keywordflow}{if}\ (A.rowsize()\ !=\ Aproj.rowsize())\ std::cout\ <<\ \textcolor{stringliteral}{"{}A.rowsize()\ !=\ Aproj.rowsize()"{}}\ <<\ std::endl;}
+\DoxyCodeLine{00761\ \ \ \ \ FP1024\ rep\_err\ =\ \doxymbox{\hyperlink{namespacehdnum_ac9e34867362c736d9e18e21303c3457f}{frobenius\_norm<FP1024>}}(A\ -\/\ Aproj)\ /\ \doxymbox{\hyperlink{namespacehdnum_ac9e34867362c736d9e18e21303c3457f}{frobenius\_norm<FP1024>}}(A);}
+\DoxyCodeLine{00762\ \ \ \ \ \textcolor{keywordflow}{return}\ std::make\_pair(ortho\_err,\ rep\_err);}
+\DoxyCodeLine{00763\ \}}
+\DoxyCodeLine{00764\ }
+\DoxyCodeLine{00789\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2,\ \textcolor{keyword}{typename}\ T3,\ \textcolor{keyword}{typename}\ T4>}
+\DoxyCodeLine{00790\ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\ \doxymbox{\hyperlink{namespacehdnum_ac10b4c5935878e279d8804aea24f6c33}{run\_gram\_schmidt\_mixed}}(DenseMatrix<T1>\&\ A,\ std::string\ combo\_label,\ std::string\ \doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}})\ \ \{}
+\DoxyCodeLine{00791\ \ \ \ \ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\ result;}
+\DoxyCodeLine{00792\ \ \ \ \ \textcolor{keywordflow}{try}}
+\DoxyCodeLine{00793\ \ \ \ \ \{}
+\DoxyCodeLine{00794\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ try\ to\ run\ mixed\ precision\ classical\ Gram-\/Schmidt}}
+\DoxyCodeLine{00795\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ DenseMatrix<T1>\ Q\ =\ \doxymbox{\hyperlink{namespacehdnum_a950401edcbd90548374032a66e1b1388}{cgs\_mixed<T1,\ T2,\ T3,\ T4>}}(A);}
+\DoxyCodeLine{00796\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ compute\ orthogonality\ and\ representation\ errors}}
+\DoxyCodeLine{00797\ \ \ \ \ \ \ \ \ std::pair<FP1024,\ FP1024>\ errors\ =\ \doxymbox{\hyperlink{namespacehdnum_a289730b738202cdb707239bc04e16fa0}{calculate\_errors<T1>}}(A,\ Q);}
+\DoxyCodeLine{00798\ \ \ \ \ \ \ \ \ result.\doxymbox{\hyperlink{structhdnum_1_1Result_a6f6940d7a69ce881e1058ca03bed0a1b}{ortho\_err\_cgs}}\ =\ errors.first;}
+\DoxyCodeLine{00799\ \ \ \ \ \ \ \ \ result.\doxymbox{\hyperlink{structhdnum_1_1Result_ac84002b61a6b39976565939a9d07a7f8}{rep\_err\_cgs}}\ =\ errors.second;}
+\DoxyCodeLine{00800\ \ \ \ \ \}}
+\DoxyCodeLine{00801\ \ \ \ \ \textcolor{keywordflow}{catch}(\textcolor{keyword}{const}\ std::invalid\_argument\&\ e)}
+\DoxyCodeLine{00802\ \ \ \ \ \{}
+\DoxyCodeLine{00803\ \ \ \ \ \ \ \ \ std::cerr\ <<\ combo\_label\ <<\ \textcolor{stringliteral}{"{}:\ (kappa=\ "{}}\ <<\ \doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}}\ <<\ \textcolor{stringliteral}{"{})\ "{}}\ <<\ e.what()\ <<\ \textcolor{charliteral}{'\(\backslash\)n'};}
+\DoxyCodeLine{00804\ \ \ \ \ \}}
+\DoxyCodeLine{00805\ }
+\DoxyCodeLine{00806\ \ \ \ \ \textcolor{keywordflow}{try}}
+\DoxyCodeLine{00807\ \ \ \ \ \{}
+\DoxyCodeLine{00808\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ try\ to\ run\ mixed\ precision\ modified\ Gram-\/Schmidt}}
+\DoxyCodeLine{00809\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ DenseMatrix<T1>\ Q\ =\ \doxymbox{\hyperlink{namespacehdnum_a346fdb2ef804c275a584929a548098e5}{mgs\_mixed<T1,\ T2,\ T3,\ T4>}}(A);}
+\DoxyCodeLine{00810\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ compute\ orthogonality\ and\ representation\ errors}}
+\DoxyCodeLine{00811\ \ \ \ \ \ \ \ \ std::pair<FP1024,\ FP1024>\ errors\ =\ \doxymbox{\hyperlink{namespacehdnum_a289730b738202cdb707239bc04e16fa0}{calculate\_errors<T1>}}(A,\ Q);}
+\DoxyCodeLine{00812\ \ \ \ \ \ \ \ \ result.\doxymbox{\hyperlink{structhdnum_1_1Result_ac2befeb6197e780a16e9696c609614de}{ortho\_err\_mgs}}\ =\ errors.first;}
+\DoxyCodeLine{00813\ \ \ \ \ \ \ \ \ result.\doxymbox{\hyperlink{structhdnum_1_1Result_a1f5edf945c2da0d145fe4adbb6deed4d}{rep\_err\_mgs}}\ =\ errors.second;}
+\DoxyCodeLine{00814\ \ \ \ \ \}}
+\DoxyCodeLine{00815\ \ \ \ \ \textcolor{keywordflow}{catch}(\textcolor{keyword}{const}\ std::invalid\_argument\&\ e)}
+\DoxyCodeLine{00816\ \ \ \ \ \{}
+\DoxyCodeLine{00817\ \ \ \ \ \ \ \ \ std::cerr\ <<\ combo\_label\ <<\ \textcolor{stringliteral}{"{}:\ (kappa=\ "{}}\ <<\ \doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}}\ <<\ \textcolor{stringliteral}{"{})\ "{}}\ <<\ e.what()\ <<\ \textcolor{charliteral}{'\(\backslash\)n'};}
+\DoxyCodeLine{00818\ \ \ \ \ \}}
+\DoxyCodeLine{00819\ }
+\DoxyCodeLine{00820\ \ \ \ \ \textcolor{keywordflow}{try}}
+\DoxyCodeLine{00821\ \ \ \ \ \{}
+\DoxyCodeLine{00822\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ try\ to\ run\ mixed\ precision\ CGS2}}
+\DoxyCodeLine{00823\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ DenseMatrix<T1>\ Q\ =\ \doxymbox{\hyperlink{namespacehdnum_a40a9727812e8d3e89cdf09f0880459c3}{cgs2\_mixed<T1,\ T2,\ T3,\ T4>}}(A);}
+\DoxyCodeLine{00824\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ compute\ orthogonality\ and\ representation\ errors}}
+\DoxyCodeLine{00825\ \ \ \ \ \ \ \ \ std::pair<FP1024,\ FP1024>\ errors\ =\ \doxymbox{\hyperlink{namespacehdnum_a289730b738202cdb707239bc04e16fa0}{calculate\_errors<T1>}}(A,\ Q);}
+\DoxyCodeLine{00826\ \ \ \ \ \ \ \ \ result.\doxymbox{\hyperlink{structhdnum_1_1Result_aeeb492859c39288811c7d8f4aa9655b7}{ortho\_err\_cgs2}}\ =\ errors.first;}
+\DoxyCodeLine{00827\ \ \ \ \ \ \ \ \ result.\doxymbox{\hyperlink{structhdnum_1_1Result_a3fe611d80928fe218766ca81cb88da63}{rep\_err\_cgs2}}\ =\ errors.second;}
+\DoxyCodeLine{00828\ \ \ \ \ \}}
+\DoxyCodeLine{00829\ \ \ \ \ \textcolor{keywordflow}{catch}(\textcolor{keyword}{const}\ std::invalid\_argument\&\ e)}
+\DoxyCodeLine{00830\ \ \ \ \ \{}
+\DoxyCodeLine{00831\ \ \ \ \ \ \ \ \ std::cerr\ <<\ combo\_label\ <<\ \textcolor{stringliteral}{"{}:\ (kappa=\ "{}}\ <<\ \doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}}\ <<\ \textcolor{stringliteral}{"{})\ "{}}\ <<\ e.what()\ <<\ \textcolor{charliteral}{'\(\backslash\)n'};}
+\DoxyCodeLine{00832\ \ \ \ \ \}}
+\DoxyCodeLine{00833\ \ \ \ \ }
+\DoxyCodeLine{00834\ \ \ \ \ \textcolor{keywordflow}{try}}
+\DoxyCodeLine{00835\ \ \ \ \ \{}
+\DoxyCodeLine{00836\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ try\ to\ run\ mixed\ precision\ MGS2}}
+\DoxyCodeLine{00837\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ DenseMatrix<T1>\ Q\ =\ \doxymbox{\hyperlink{namespacehdnum_a32b66f71e18c3f2e459a05e8fd8d594f}{mgs2\_mixed<T1,\ T2,\ T3,\ T4>}}(A);}
+\DoxyCodeLine{00838\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ compute\ orthogonality\ and\ representation\ errors}}
+\DoxyCodeLine{00839\ \ \ \ \ \ \ \ \ std::pair<FP1024,\ FP1024>\ errors\ =\ \doxymbox{\hyperlink{namespacehdnum_a289730b738202cdb707239bc04e16fa0}{calculate\_errors<T1>}}(A,\ Q);}
+\DoxyCodeLine{00840\ \ \ \ \ \ \ \ \ result.\doxymbox{\hyperlink{structhdnum_1_1Result_ab65e6020118c95bad03a4e8c9ef41faf}{ortho\_err\_mgs2}}\ =\ errors.first;}
+\DoxyCodeLine{00841\ \ \ \ \ \ \ \ \ result.\doxymbox{\hyperlink{structhdnum_1_1Result_a08f58e045f8cc8f59e59eaa58fdc0109}{rep\_err\_mgs2}}\ =\ errors.second;}
+\DoxyCodeLine{00842\ \ \ \ \ \}}
+\DoxyCodeLine{00843\ \ \ \ \ \textcolor{keywordflow}{catch}(\textcolor{keyword}{const}\ std::invalid\_argument\&\ e)}
+\DoxyCodeLine{00844\ \ \ \ \ \{}
+\DoxyCodeLine{00845\ \ \ \ \ \ \ \ \ std::cerr\ <<\ combo\_label\ <<\ \textcolor{stringliteral}{"{}:\ (kappa=\ "{}}\ <<\ \doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}}\ <<\ \textcolor{stringliteral}{"{})\ "{}}\ <<\ e.what()\ <<\ \textcolor{charliteral}{'\(\backslash\)n'};}
+\DoxyCodeLine{00846\ \ \ \ \ \}}
+\DoxyCodeLine{00847\ }
+\DoxyCodeLine{00848\ \ \ \ \ \textcolor{keywordflow}{return}\ result;}
+\DoxyCodeLine{00849\ \}}
+\DoxyCodeLine{00850\ }
+\DoxyCodeLine{00874\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2>}
+\DoxyCodeLine{00875\ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\ \doxymbox{\hyperlink{namespacehdnum_a22139d45934850ed9f8c69d1a6975b6e}{run\_gram\_schmidt\_mixed2}}(DenseMatrix<T2>\&\ A,\ std::string\ combo\_label,\ std::string\ \doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}})\ \ \{}
+\DoxyCodeLine{00876\ \ \ \ \ \doxymbox{\hyperlink{structhdnum_1_1Result}{Result}}\ result;}
+\DoxyCodeLine{00877\ \ \ \ \ DenseMatrix<T1>\ A1\ =\ \doxymbox{\hyperlink{namespacehdnum_ab357ebf874494f1ea2c9737b31de200b}{matrix\_cast<T2,T1>}}(A);}
+\DoxyCodeLine{00878\ \ \ \ \ \textcolor{keywordflow}{try}}
+\DoxyCodeLine{00879\ \ \ \ \ \{}
+\DoxyCodeLine{00880\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ try\ to\ run\ mixed\ precision\ classical\ Gram-\/Schmidt}}
+\DoxyCodeLine{00881\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ DenseMatrix<T2>\ Q\ =\ \doxymbox{\hyperlink{namespacehdnum_a950401edcbd90548374032a66e1b1388}{cgs\_mixed<T2,\ T2,\ T2,\ T2>}}(A);}
+\DoxyCodeLine{00882\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ compute\ orthogonality\ and\ representation\ errors}}
+\DoxyCodeLine{00883\ \ \ \ \ \ \ \ \ std::pair<FP1024,\ FP1024>\ errors\ =\ \doxymbox{\hyperlink{namespacehdnum_a289730b738202cdb707239bc04e16fa0}{calculate\_errors<T2>}}(A,\ Q);}
+\DoxyCodeLine{00884\ \ \ \ \ \ \ \ \ result.\doxymbox{\hyperlink{structhdnum_1_1Result_a6f6940d7a69ce881e1058ca03bed0a1b}{ortho\_err\_cgs}}\ =\ errors.first;}
+\DoxyCodeLine{00885\ \ \ \ \ \ \ \ \ result.\doxymbox{\hyperlink{structhdnum_1_1Result_ac84002b61a6b39976565939a9d07a7f8}{rep\_err\_cgs}}\ =\ errors.second;}
+\DoxyCodeLine{00886\ \ \ \ \ \}}
+\DoxyCodeLine{00887\ \ \ \ \ \textcolor{keywordflow}{catch}(\textcolor{keyword}{const}\ std::invalid\_argument\&\ e)}
+\DoxyCodeLine{00888\ \ \ \ \ \{}
+\DoxyCodeLine{00889\ \ \ \ \ \ \ \ \ std::cerr\ <<\ combo\_label\ <<\ \textcolor{stringliteral}{"{}:\ (kappa=\ "{}}\ <<\ \doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}}\ <<\ \textcolor{stringliteral}{"{})\ "{}}\ <<\ e.what()\ <<\ \textcolor{charliteral}{'\(\backslash\)n'};}
+\DoxyCodeLine{00890\ \ \ \ \ \}}
+\DoxyCodeLine{00891\ }
+\DoxyCodeLine{00892\ \ \ \ \ \textcolor{keywordflow}{try}}
+\DoxyCodeLine{00893\ \ \ \ \ \{}
+\DoxyCodeLine{00894\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ try\ to\ run\ mixed\ precision\ modified\ Gram-\/Schmidt}}
+\DoxyCodeLine{00895\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ DenseMatrix<T2>\ Q\ =\ \doxymbox{\hyperlink{namespacehdnum_a346fdb2ef804c275a584929a548098e5}{mgs\_mixed<T2,\ T2,\ T2,\ T2>}}(A);}
+\DoxyCodeLine{00896\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ compute\ orthogonality\ and\ representation\ errors}}
+\DoxyCodeLine{00897\ \ \ \ \ \ \ \ \ std::pair<FP1024,\ FP1024>\ errors\ =\ \doxymbox{\hyperlink{namespacehdnum_a289730b738202cdb707239bc04e16fa0}{calculate\_errors<T2>}}(A,\ Q);}
+\DoxyCodeLine{00898\ \ \ \ \ \ \ \ \ result.\doxymbox{\hyperlink{structhdnum_1_1Result_ac2befeb6197e780a16e9696c609614de}{ortho\_err\_mgs}}\ =\ errors.first;}
+\DoxyCodeLine{00899\ \ \ \ \ \ \ \ \ result.\doxymbox{\hyperlink{structhdnum_1_1Result_a1f5edf945c2da0d145fe4adbb6deed4d}{rep\_err\_mgs}}\ =\ errors.second;}
+\DoxyCodeLine{00900\ \ \ \ \ \}}
+\DoxyCodeLine{00901\ \ \ \ \ \textcolor{keywordflow}{catch}(\textcolor{keyword}{const}\ std::invalid\_argument\&\ e)}
+\DoxyCodeLine{00902\ \ \ \ \ \{}
+\DoxyCodeLine{00903\ \ \ \ \ \ \ \ \ std::cerr\ <<\ combo\_label\ <<\ \textcolor{stringliteral}{"{}:\ (kappa=\ "{}}\ <<\ \doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}}\ <<\ \textcolor{stringliteral}{"{})\ "{}}\ <<\ e.what()\ <<\ \textcolor{charliteral}{'\(\backslash\)n'};}
+\DoxyCodeLine{00904\ \ \ \ \ \}}
+\DoxyCodeLine{00905\ }
+\DoxyCodeLine{00906\ \ \ \ \ \textcolor{keywordflow}{try}}
+\DoxyCodeLine{00907\ \ \ \ \ \{}
+\DoxyCodeLine{00908\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ try\ to\ run\ mixed\ precision\ CGS2}}
+\DoxyCodeLine{00909\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ DenseMatrix<T2>\ Q\ =\ \doxymbox{\hyperlink{namespacehdnum_aa191b63622c76bb4dafbb628c71a007a}{cgs2\_2\_mixed<T1,\ T2>}}(A1);}
+\DoxyCodeLine{00910\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ compute\ orthogonality\ and\ representation\ errors}}
+\DoxyCodeLine{00911\ \ \ \ \ \ \ \ \ std::pair<FP1024,\ FP1024>\ errors\ =\ \doxymbox{\hyperlink{namespacehdnum_a289730b738202cdb707239bc04e16fa0}{calculate\_errors<T2>}}(A,\ Q);}
+\DoxyCodeLine{00912\ \ \ \ \ \ \ \ \ result.\doxymbox{\hyperlink{structhdnum_1_1Result_aeeb492859c39288811c7d8f4aa9655b7}{ortho\_err\_cgs2}}\ =\ errors.first;}
+\DoxyCodeLine{00913\ \ \ \ \ \ \ \ \ result.\doxymbox{\hyperlink{structhdnum_1_1Result_a3fe611d80928fe218766ca81cb88da63}{rep\_err\_cgs2}}\ =\ errors.second;}
+\DoxyCodeLine{00914\ \ \ \ \ \}}
+\DoxyCodeLine{00915\ \ \ \ \ \textcolor{keywordflow}{catch}(\textcolor{keyword}{const}\ std::invalid\_argument\&\ e)}
+\DoxyCodeLine{00916\ \ \ \ \ \{}
+\DoxyCodeLine{00917\ \ \ \ \ \ \ \ \ std::cerr\ <<\ combo\_label\ <<\ \textcolor{stringliteral}{"{}:\ (kappa=\ "{}}\ <<\ \doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}}\ <<\ \textcolor{stringliteral}{"{})\ "{}}\ <<\ e.what()\ <<\ \textcolor{charliteral}{'\(\backslash\)n'};}
+\DoxyCodeLine{00918\ \ \ \ \ \}}
+\DoxyCodeLine{00919\ \ \ \ \ }
+\DoxyCodeLine{00920\ \ \ \ \ \textcolor{keywordflow}{try}}
+\DoxyCodeLine{00921\ \ \ \ \ \{}
+\DoxyCodeLine{00922\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ try\ to\ run\ mixed\ precision\ MGS2}}
+\DoxyCodeLine{00923\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ DenseMatrix<T2>\ Q\ =\ \doxymbox{\hyperlink{namespacehdnum_ae6a359563600106e9e6e50e31d8baeae}{mgs2\_2\_mixed<T1,\ T2>}}(A1);}
+\DoxyCodeLine{00924\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ compute\ orthogonality\ and\ representation\ errors}}
+\DoxyCodeLine{00925\ \ \ \ \ \ \ \ \ std::pair<FP1024,\ FP1024>\ errors\ =\ \doxymbox{\hyperlink{namespacehdnum_a289730b738202cdb707239bc04e16fa0}{calculate\_errors<T2>}}(A,\ Q);}
+\DoxyCodeLine{00926\ \ \ \ \ \ \ \ \ result.\doxymbox{\hyperlink{structhdnum_1_1Result_ab65e6020118c95bad03a4e8c9ef41faf}{ortho\_err\_mgs2}}\ =\ errors.first;}
+\DoxyCodeLine{00927\ \ \ \ \ \ \ \ \ result.\doxymbox{\hyperlink{structhdnum_1_1Result_a08f58e045f8cc8f59e59eaa58fdc0109}{rep\_err\_mgs2}}\ =\ errors.second;}
+\DoxyCodeLine{00928\ \ \ \ \ \}}
+\DoxyCodeLine{00929\ \ \ \ \ \textcolor{keywordflow}{catch}(\textcolor{keyword}{const}\ std::invalid\_argument\&\ e)}
+\DoxyCodeLine{00930\ \ \ \ \ \{}
+\DoxyCodeLine{00931\ \ \ \ \ \ \ \ \ std::cerr\ <<\ combo\_label\ <<\ \textcolor{stringliteral}{"{}:\ (kappa=\ "{}}\ <<\ \doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}}\ <<\ \textcolor{stringliteral}{"{})\ "{}}\ <<\ e.what()\ <<\ \textcolor{charliteral}{'\(\backslash\)n'};}
+\DoxyCodeLine{00932\ \ \ \ \ \}}
+\DoxyCodeLine{00933\ }
+\DoxyCodeLine{00934\ \ \ \ \ \textcolor{keywordflow}{return}\ result;}
+\DoxyCodeLine{00935\ \}}
+\DoxyCodeLine{00936\ }
+\DoxyCodeLine{00937\ \textcolor{preprocessor}{\#pragma\ endregion\ error\_calculation}}
+\DoxyCodeLine{00938\ \textcolor{comment}{//\ \#endif}}
+\DoxyCodeLine{00939\ \textcolor{comment}{//\ \#endif}}
+\DoxyCodeLine{00940\ }
+\DoxyCodeLine{00941\ \}\ \ \textcolor{comment}{//\ namespace\ hdnum}}
+
+\end{DoxyCode}

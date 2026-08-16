@@ -1,0 +1,80 @@
+\doxysection{/\+home/\+lucia/\+\+Documents/\+\+FP/\+hdnum/\+examples/\+praktikum/\+make\+\_\+test\+\_\+set.cc File Reference}
+\hypertarget{make__test__set_8cc}{}\label{make__test__set_8cc}\index{/home/lucia/Documents/FP/hdnum/examples/praktikum/make\_test\_set.cc@{/home/lucia/Documents/FP/hdnum/examples/praktikum/make\_test\_set.cc}}
+
+
+Generates matrices over varying condition numbers and stores them as Matrix\+Market files.  
+
+
+{\ttfamily \+\#include "{}../\+../\+hdnum.\+hh"{}}\newline
+{\ttfamily \+\#include "{}../\+../\+src/\+gram\+\_\+schmidt\+\_\+mixed.\+hh"{}}\newline
+{\ttfamily \+\#include "{}../\+../\+src/\+testmatrices.\+hh"{}}\newline
+{\ttfamily \+\#include $<$array$>$}\newline
+{\ttfamily \+\#include $<$cmath$>$}\newline
+{\ttfamily \+\#include $<$iomanip$>$}\newline
+{\ttfamily \+\#include $<$iostream$>$}\newline
+{\ttfamily \+\#include $<$tuple$>$}\newline
+{\ttfamily \+\#include $<$fstream$>$}\newline
+{\ttfamily \+\#include $<$filesystem$>$}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \doxymbox{\hyperlink{make__test__set_8cc_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Generates matrices over varying condition numbers and stores them as Matrix\+Market files. 
+
+
+
+\label{doc-func-members}
+\Hypertarget{make__test__set_8cc_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{make__test__set_8cc_ae66f6b31b5ad750f1fe042a706a4e3d4}\index{make\_test\_set.cc@{make\_test\_set.cc}!main@{main}}
+\index{main@{main}!make\_test\_set.cc@{make\_test\_set.cc}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{make__test__set_8cc_ae66f6b31b5ad750f1fe042a706a4e3d4} 
+int main (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}}\ =\ 100;}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}}\ =\ 10;}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ max\_kappa\ =\ 1e16;}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ step\ =\ 3;}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ seed\_u\ =\ 10;}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ seed\_v\ =\ 11;}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{comment}{//set\ seeds\ random}}
+\DoxyCodeLine{00030\ \ \ \ \ srand(time(0));}
+\DoxyCodeLine{00031\ \ \ \ \ seed\_u\ =\ rand()\ \%\ 1000;}
+\DoxyCodeLine{00032\ \ \ \ \ seed\_v\ =\ rand()\ \%\ 1000;}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \ \ \ \ seed\_u\ =\ 730;}
+\DoxyCodeLine{00035\ \ \ \ \ seed\_v\ =\ 169;}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{comment}{//\ delete\ all\ files\ in\ matrix\ directory}}
+\DoxyCodeLine{00038\ \ \ \ \ std::filesystem::path\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8}{matrix\_dir}}\ =\ \textcolor{stringliteral}{"{}matrix"{}};}
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keywordflow}{if}\ (std::filesystem::exists(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8}{matrix\_dir}}))\ \{}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ entry\ :\ std::filesystem::directory\_iterator(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8}{matrix\_dir}}))\ \{}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \ \ \ \ std::filesystem::remove(entry.path());}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00043\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ std::filesystem::create\_directory(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8}{matrix\_dir}});}
+\DoxyCodeLine{00045\ \ \ \ \ \}}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{comment}{//\ Generate\ test\ matrices\ with\ varying\ condition\ numbers\ and\ write\ to\ files}}
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keywordflow}{for}\ (std::size\_t\ i\ =\ 10;\ i\ <\ max\_kappa;\ i*=step)\ \{}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Generate\ FP1024\ matrix}}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ DenseMatrix<FP1024>\ A\_kappa(\doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a9ab7e5832cef391eb8b1505a601fb215}{n}},\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_a64c6389273788a3c6349b8f7db98de06}{m}});}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ randsvd<FP1024>(A\_kappa,\ \doxymbox{\hyperlink{namespacehdnum_a6adb847d9be490e5b7b804c149c37090}{mixed\_cast<FP1024>}}((\textcolor{keywordtype}{double})i),\ seed\_u,\ seed\_v);}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ std::string\ filename\ =\ \doxymbox{\hyperlink{gram__schmidt__mixed_8cc_abdffe31b8b1b2e6a43717e718e112bb8}{matrix\_dir}}.u8string()\ +\ \textcolor{stringliteral}{"{}/matrix\_kappa\_"{}}\ +\ std::to\_string(i)\ +\ \textcolor{stringliteral}{"{}\_seed\_u\_v\_"{}}\ +\ std::to\_string(seed\_u)+\textcolor{stringliteral}{"{}\_"{}}+std::to\_string(seed\_v)\ +\ \textcolor{stringliteral}{"{}.mtx"{}};}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{namespacehdnum_a20d09620abaacbc6293b92a023a6e0a9}{writeMatrixMarketHighPrec}}(A\_kappa,\ filename);}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \ \ \}}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \}}
+
+\end{DoxyCode}

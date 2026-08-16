@@ -1,0 +1,44 @@
+\doxysection{/\+home/\+lucia/\+\+Documents/\+\+FP/\+hdnum/\+examples/\+praktikum/\+test\+\_\+gram\+\_\+schmidt.cc File Reference}
+\hypertarget{test__gram__schmidt_8cc}{}\label{test__gram__schmidt_8cc}\index{/home/lucia/Documents/FP/hdnum/examples/praktikum/test\_gram\_schmidt.cc@{/home/lucia/Documents/FP/hdnum/examples/praktikum/test\_gram\_schmidt.cc}}
+
+
+Mixed-\/precision Gram-\/\+Schmidt test suite.  
+
+
+{\ttfamily \+\#include "{}../\+../\+hdnum.\+hh"{}}\newline
+{\ttfamily \+\#include "{}../\+../\+src/\+gram\+\_\+schmidt\+\_\+mixed.\+hh"{}}\newline
+{\ttfamily \+\#include "{}../\+../\+src/\+testmatrices.\+hh"{}}\newline
+{\ttfamily \+\#include $<$array$>$}\newline
+{\ttfamily \+\#include $<$cmath$>$}\newline
+{\ttfamily \+\#include $<$iomanip$>$}\newline
+{\ttfamily \+\#include $<$iostream$>$}\newline
+{\ttfamily \+\#include $<$tuple$>$}\newline
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const std::\+size\+\_\+t \doxymbox{\hyperlink{test__gram__schmidt_8cc_a0ada73864feca33d57698f2c4603f1fb}{n}} = 20
+\item 
+const double \doxymbox{\hyperlink{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}{kappa}} = 100000.\+0
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Mixed-\/precision Gram-\/\+Schmidt test suite. 
+
+Runs classical and modified Gram-\/\+Schmidt in mixed precisions for a variety of floating-\/point types. Computes orthogonality and reconstruction errors and prints the results. Intended to test the algorithm on all precision combinations (9⁴ combinations) Warning:\+ this might take some time to compile and run and most of these combinations do not make sense to use in practice. 
+
+\label{doc-var-members}
+\Hypertarget{test__gram__schmidt_8cc_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9}\index{test\_gram\_schmidt.cc@{test\_gram\_schmidt.cc}!kappa@{kappa}}
+\index{kappa@{kappa}!test\_gram\_schmidt.cc@{test\_gram\_schmidt.cc}}
+\doxysubsubsection{\texorpdfstring{kappa}{kappa}}
+{\footnotesize\ttfamily \label{test__gram__schmidt_8cc_ae4015e7b36314901a960f03d51097ce9} 
+const double kappa = 100000.\+0}
+
+\Hypertarget{test__gram__schmidt_8cc_a0ada73864feca33d57698f2c4603f1fb}\index{test\_gram\_schmidt.cc@{test\_gram\_schmidt.cc}!n@{n}}
+\index{n@{n}!test\_gram\_schmidt.cc@{test\_gram\_schmidt.cc}}
+\doxysubsubsection{\texorpdfstring{n}{n}}
+{\footnotesize\ttfamily \label{test__gram__schmidt_8cc_a0ada73864feca33d57698f2c4603f1fb} 
+const std::\+size\+\_\+t n = 20}
+

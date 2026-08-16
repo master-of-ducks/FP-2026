@@ -1,0 +1,117 @@
+%CPFLOAT    Round floating point numbers to lower precision.
+%   [Y,OPTIONS] = CPFLOAT(X,FPOPTS) returns a matrix Y containing the elements
+%   of X rounded to a lower-precision floating-point format (the target format).
+%   The function can be used to simulate the occurrence of soft errors in the
+%   rounded values. X must be a real matrix with entries of class 'single' or
+%   'double' (the storage format), and the output matrix Y will be a real matrix
+%   of the same size with entries of the same class. The parameters that
+%   describe the target format, the rounding mode, and the likelihood of soft
+%   errors are stored by the function in persistent memory, and are preserved
+%   across multiple calls to CPFLOAT. The internal configuration can be modified
+%   by means of the structure FPOPTS, whose fields are discussed in detail
+%   below. The parameters for which a new configuration value is not specified
+%   take the default value on the first invocation of CPFLOAT, and keep their
+%   previous values on subsequent calls. The parameters of the current
+%   configuration are returned in the second output argument OPTIONS, a
+%   structure with the same fields as FPOPTS.
+%
+%   The fields of FPOPTS are interpreted as follows.
+%
+%   * The string FPOPTS.format specifies the target floating-point format.
+%     Possible values are:
+%       'q43', 'fp8-e4m3', 'E4M3'          for OCP specification E4M3;
+%       'q52', 'fp8-e5m2', 'E5M2'          for OCP specification E5M2;
+%       'b', 'bf16', 'bfloat16'            for Intel bfloat16;
+%       'h', 'fp16', 'binary16', 'half'    for IEEE binary16 (half precision);
+%       't', 'tf32', 'TeensorFloat-32'     for NVIDIA TensorFloat-32;
+%       's', 'fp32', 'binary32', 'single'  for IEEE binary32 (single precision);
+%       'd', 'fp64', 'binary64', 'double'  for IEEE binary64 (double precision);
+%       'c', 'custom'                      for a custom-precision format.
+%     In order to use a custom format, the parameters of the floating-point
+%     format must be supplied using the FPOPTS.params field. The default value
+%     for this field is 'h'.
+%
+%   * The three-element vector FPOPTS.params specifies the parameters of the
+%     target floating-point format, and is ignored unless FPOPTS.format is set
+%     to either 'c' or 'custom'. The vector has the form [PRECISION,EMIN,EMAX],
+%     where PRECISION, EMIN and EMAX are positive integers representing
+%     the number of binary digits in the fraction and the maximum exponent of
+%     the target format, respectively. The default value of this field is
+%     the vector [11,-14,15].
+%
+%   * The scalar FPOPTS.explim specifies the support for an extended exponent
+%     range. The target floating-point format will have the exponent range of
+%     the storage format ('single' or 'double', depending on the class of X) if
+%     this field is set to 0, and the exponent range of the format specified in
+%     FPOPTS.format otherwise. The default value for this field is 1.
+%
+%   * The scalar FPOPTS.infinity specifies whether infinities are supported. The
+%     target floating-point format will support infinities if this field is set
+%     to 1, and they will be replaced by NaNs otherwise. The default value for
+%     this field is 0 if the target format is 'E4M3' and 1 otherwise.
+%
+%   * The scalar FPOPTS.round specifies the rounding mode. Possible values are:
+%       -1 for round-to-nearest with ties-to-away;
+%        0 for round-to-nearest with ties-to-zero;
+%        1 for round-to-nearest with ties-to-even;
+%        2 for round-toward-plus-infinity;
+%        3 for round-toward-minus-infinity;
+%        4 for round-toward-zero;
+%        5 for round-stochastic with proportional probabilities;
+%        6 for round-stochastic with equal probabilities; and
+%        7 for round-to-odd.
+%      Any other value results in no rounding. The default value for this field
+%      is 1.
+%
+%   * The scalar FPOPTS.saturation specifies whether saturation arithmetic is in
+%     use. On overflow, the target floating-point format will use the largest
+%     representable floating-point if this field is set to 0, and infinity
+%     otherwise. The default value for this field is 0.
+%
+%   * The scalar FPOPTS.subnormal specifies the support for subnormal numbers.
+%     The target floating-point format will not support subnormal numbers if
+%     this field is set to 0, and will support them otherwise. The default value
+%     for this field is 0 if the target format is 'bfloat16' and 1 otherwise.
+%
+%   * The scalar FPOPTS.flip specifies whether the function should simulate the
+%     occurrence of a single bit flip striking the floating-point representation
+%     of elements of Y. Possible values are:
+%        0    no bit flips
+%        1    bit flips can occur in fraction of target-format representation
+%        2    bit flips can occur in any bit of target-format representation
+%     The probability of a bit flip occurring in any element of Y is FPOPTS.p.
+%     If the exponent range of the storage format is larger than that of the
+%     target format, then subnormal numbers might be stored as normal numbers,
+%     in which case the bit flip cannot strike the leading bit of the
+%     representation. The default value for this field is 0.
+%
+%   * The scalar FPOPTS.p specifies the probability of bit flips. If FPOPTS.flip
+%     is not set to zero, then the value of this field must be a valid
+%     probability, that is, a real number in the interval [0,1]. The default
+%     value for this field is 0.5.
+%
+%   The interface of CPFLOAT is mostly compatible with that of the MATLAB
+%   function CHOP available at https://github.com/higham/chop. See
+%   https://github.com/north-numerical-computing/cpfloat/blob/main/README.md
+%   for an up-to-date list of differences.
+
+% SPDX-FileCopyrightText: 2020 Massimiliano Fasi and Mantas Mikaitis
+% SPDX-License-Identifier: LGPL-2.1-or-later
+
+% CPFloat - Custom Precision Floating-point numbers.
+%
+% Copyright 2020 Massimiliano Fasi and Mantas Mikaitis
+%
+% This library is free software; you can redistribute it and/or modify it under
+% the terms of the GNU Lesser General Public License as published by the Free
+% Software Foundation; either version 2.1 of the License, or (at your option)
+% any later version.
+%
+% This library is distributed in the hope that it will be useful, but WITHOUT
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+% FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+% details.
+%
+% You should have received a copy of the GNU Lesser General Public License along
+% with this library; if not, write to the Free Software Foundation, Inc., 51
+% Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA

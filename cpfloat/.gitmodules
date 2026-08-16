@@ -1,0 +1,6 @@
+[submodule "include/pcg-c"]
+	path = deps/pcg-c
+	url = https://github.com/imneme/pcg-c.git
+[submodule "include/float_params"]
+	path = deps/float_params
+	url = https://github.com/higham/float_params.git
